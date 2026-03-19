@@ -36,7 +36,7 @@
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .product-card:hover img { transform: scale(1.05); }
+        .product-card:hover .sprite-img { transform: scale(1.1); }
         .cart-badge { animation: bounce 0.3s ease-in-out; }
         @keyframes bounce {
             0%, 100% { transform: scale(1); }
@@ -49,10 +49,15 @@
         .modal-overlay { transition: all 0.3s ease; }
         .modal-content { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 
-        /* Style pour les images de type sprite */
         .sprite-img {
             background-size: 300% 200%;
             background-repeat: no-repeat;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .category-pill.active {
+            background-color: #000;
+            color: #fff;
         }
     </style>
 </head>
@@ -87,16 +92,16 @@
             </div>
             
             <div id="mobile-menu" class="hidden md:hidden absolute left-0 right-0 top-full bg-white border-b shadow-xl p-6 flex flex-col space-y-4 font-bold text-center">
-                <button onclick="navigate('home'); toggleMobileMenu()" class="hover:text-brand-orange">Accueil</button>
-                <button onclick="navigate('shop'); toggleMobileMenu()" class="hover:text-brand-orange">Boutique</button>
-                <button onclick="navigate('contact'); toggleMobileMenu()" class="hover:text-brand-orange">Contact</button>
+                <button onclick="navigate('home'); toggleMobileMenu()" class="hover:text-brand-orange text-lg">Accueil</button>
+                <button onclick="navigate('shop'); toggleMobileMenu()" class="hover:text-brand-orange text-lg">Boutique</button>
+                <button onclick="navigate('contact'); toggleMobileMenu()" class="hover:text-brand-orange text-lg">Contact</button>
             </div>
         </div>
     </header>
 
     <!-- Contenu Dynamique -->
     <main id="app-content" class="flex-grow">
-        <!-- JS injectera le contenu ici -->
+        <!-- Contenu injecté par JS -->
     </main>
 
     <!-- Pied de page -->
@@ -108,23 +113,23 @@
                 </div>
                 <p class="text-sm leading-relaxed mb-6">L'excellence de l'impression et de la stratégie digitale à votre portée. Qualité garantie et livraison rapide.</p>
                 <div class="flex space-x-4">
-                    <a href="#" class="hover:text-brand-orange transition"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="hover:text-brand-orange transition"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-orange hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-orange hover:text-white transition"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
             <div>
                 <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-widest">Navigation</h4>
                 <ul class="space-y-4 text-sm">
                     <li><button onclick="navigate('shop')" class="hover:text-brand-orange transition">Tous les produits</button></li>
-                    <li><button onclick="navigate('shop', 'physique')" class="hover:text-brand-orange transition">Imprimerie</button></li>
-                    <li><button onclick="navigate('shop', 'numerique')" class="hover:text-brand-orange transition">Solutions Digitales</button></li>
+                    <li><button onclick="navigate('shop', 'Bureautique')" class="hover:text-brand-orange transition">Bureautique</button></li>
+                    <li><button onclick="navigate('shop', 'Nos Kits')" class="hover:text-brand-orange transition">Nos Kits Business</button></li>
                 </ul>
             </div>
             <div>
                 <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-widest">Aide</h4>
                 <ul class="space-y-4 text-sm">
                     <li><button onclick="navigate('contact')" class="hover:text-brand-orange transition">Demander un devis</button></li>
-                    <li><button onclick="navigate('contact')" class="hover:text-brand-orange transition">Suivi de commande</button></li>
+                    <li><button onclick="navigate('contact')" class="hover:text-brand-orange transition">Support Client</button></li>
                 </ul>
             </div>
             <div>
@@ -191,32 +196,28 @@
         </div>
     </div>
 
+    <!-- WhatsApp Floating Button -->
     <a href="https://wa.me/2250748872676" target="_blank" class="fixed bottom-6 right-6 bg-brand-whatsapp text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-2xl hover:scale-110 transition z-50">
         <i class="fab fa-whatsapp"></i>
     </a>
 
     <script>
         const WHATSAPP_NUMBER = "2250748872676"; 
-        
-        // CONFIGURATION IMAGE PRINCIPALE
-        const MAIN_IMAGE_URL = "https://raw.githubusercontent.com/votre-compte/votre-depot/main/image_d2ce03.jpg";
+        const MAIN_IMAGE_URL = "https://raw.githubusercontent.com/ehuie-jd/assets-produits/main/image_d2ce03.jpg";
 
         const products = [
-            // Services de Bureautique (utilisant le sprite)
-            { id: 1, name: "Photocopie N&B", type: "physique", price: 25, unit: "/ page", image: https://github.com/ehuie-jd/assets-produits/blob/main/Photocopie-N%26B.png, isSprite: true, position: "0% 0%", description: "Canon - Simple face, Papier 70g/80g haute qualité.", popular: true },
-            { id: 2, name: "Impression Couleur", type: "physique", price: 100, oldPrice: 250, unit: "/ page", image: MAIN_IMAGE_URL, isSprite: true, position: "50% 0%", description: "Laser HP M577, rendu professionnel sur papier 80g.", promo: true },
-            { id: 3, name: "Saisie & Mise en Page", type: "numerique", price: 500, oldPrice: 1000, unit: "/ page", image: MAIN_IMAGE_URL, isSprite: true, position: "100% 0%", description: "Saisie de texte, mise en forme et correction de documents." },
-            { id: 4, name: "Numérisation (Scan)", type: "numerique", price: 100, unit: "/ doc", image: MAIN_IMAGE_URL, isSprite: true, position: "0% 100%", description: "Scan haute résolution vers Email ou clé USB." },
-            { id: 5, name: "Plastification", type: "physique", price: 300, oldPrice: 500, unit: "", image: MAIN_IMAGE_URL, isSprite: true, position: "50% 100%", description: "Protection durable pour vos documents A4 et A3." },
-            { id: 6, name: "Reliure", type: "physique", price: 500, unit: "- 2500 F", image: MAIN_IMAGE_URL, isSprite: true, position: "100% 100%", description: "Reliure spirale ou thermique pour rapports et mémoires." },
+            // Sprite items
+            { id: 1, name: "Photocopie N&B", category: "Bureautique", price: 25, unit: "/ page", image: MAIN_IMAGE_URL, isSprite: true, position: "0% 0%", description: "Canon - Simple face, Papier 70g/80g haute qualité.", popular: true },
+            { id: 2, name: "Impression Couleur", category: "Bureautique", price: 100, oldPrice: 250, unit: "/ page", image: MAIN_IMAGE_URL, isSprite: true, position: "50% 0%", description: "Laser HP M577, rendu professionnel sur papier 80g.", promo: true },
+            { id: 3, name: "Saisie & Mise en Page", category: "Digital", price: 500, oldPrice: 1000, unit: "/ page", image: MAIN_IMAGE_URL, isSprite: true, position: "100% 0%", description: "Saisie de texte, mise en forme et correction de documents." },
+            { id: 4, name: "Numérisation (Scan)", category: "Digital", price: 100, unit: "/ doc", image: MAIN_IMAGE_URL, isSprite: true, position: "0% 100%", description: "Scan haute résolution vers Email ou clé USB." },
+            { id: 5, name: "Plastification", category: "Bureautique", price: 300, unit: "", image: MAIN_IMAGE_URL, isSprite: true, position: "50% 100%", description: "Protection durable pour vos documents A4 et A3." },
+            { id: 6, name: "Reliure", category: "Bureautique", price: 500, unit: "- 2500 F", image: MAIN_IMAGE_URL, isSprite: true, position: "100% 100%", description: "Reliure spirale ou thermique pour rapports et mémoires." },
             
-            // Autres services (images directes)
-            { id: 7, name: "Cartes de Visite Premium", type: "physique", price: 8000, oldPrice: 10000, image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80", description: "Lot de 100 cartes de visite, papier mat 350g avec pelliculage.", popular: true, promo: true },
-            { id: 8, name: "Flyers A5 Promotionnels", type: "physique", price: 15000, image: "https://images.unsplash.com/photo-1563298723-dcfebaa392e3?auto=format&fit=crop&w=600&q=80", description: "Impression de 100 flyers A5, papier couché brillant 135g.", popular: true },
-            { id: 9, name: "Ebook : Sourcing Chine", type: "numerique", price: 5000, image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80", description: "Apprenez à importer depuis Alibaba vers l'Afrique comme un pro.", popular: true },
-            { id: 10, name: "Template CV Moderne", type: "numerique", price: 2000, image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=600&q=80", description: "Modèle professionnel éditable sur Word pour booster votre carrière." },
-            { id: 11, name: "Roll-up Publicitaire", type: "physique", price: 35000, image: "https://images.unsplash.com/photo-1621538356948-4e8ce989ba6e?auto=format&fit=crop&w=600&q=80", description: "Support vertical avec impression HD sur bâche de qualité." },
-            { id: 12, name: "Coaching E-commerce", type: "numerique", price: 25000, oldPrice: 40000, image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80", description: "Session de coaching personnalisée pour lancer votre business.", popular: true, promo: true }
+            // New items (Kits & Others)
+            { id: 7, name: "Kit Sourcing Chine", category: "Nos Kits", price: 15000, oldPrice: 25000, image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80", description: "E-book complet + Liste de fournisseurs vérifiés 1688/Alibaba.", popular: true, promo: true },
+            { id: 8, name: "Kit Visibilité Pro", category: "Nos Kits", price: 45000, image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80", description: "Logo + 100 Cartes de visite + Flyer digital + Photo profil pro.", popular: true },
+            { id: 9, name: "Clé USB 32Go", category: "Autres", price: 4500, image: "https://images.unsplash.com/photo-1618410317525-e58942b3eaa7?auto=format&fit=crop&w=600&q=80", description: "Stockage haute vitesse pour vos documents numérisés." }
         ];
 
         let cart = JSON.parse(localStorage.getItem('numerima_cart')) || [];
@@ -249,11 +250,9 @@
 
         function productCard(p) {
             const badge = p.promo ? `<span class="absolute top-4 left-4 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10">PROMO</span>` : '';
-            
-            // Gestion de l'affichage de l'image (Sprite ou Normal)
             const imgHtml = p.isSprite 
-                ? `<div class="w-full h-full sprite-img transition duration-700" style="background-image: url('${p.image}'); background-position: ${p.position};"></div>`
-                : `<img src="${p.image}" class="w-full h-full object-cover transition duration-700">`;
+                ? `<div class="w-full h-full sprite-img" style="background-image: url('${p.image}'); background-position: ${p.position};"></div>`
+                : `<img src="${p.image}" class="w-full h-full object-cover transition duration-700 hover:scale-105">`;
 
             return `
                 <div class="product-card group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition duration-500 flex flex-col h-full">
@@ -264,13 +263,13 @@
                     </div>
                     <div class="p-6 flex flex-col flex-grow">
                         <div class="flex justify-between items-start mb-2">
-                            <p class="text-[10px] font-black tracking-widest text-gray-400 uppercase">${p.type === 'physique' ? 'Impression' : 'Digital'}</p>
+                            <p class="text-[10px] font-black tracking-widest text-gray-400 uppercase">${p.category}</p>
                             <span class="text-brand-orange font-bold text-sm">${formatPrice(p.price)}${p.unit || ''}</span>
                         </div>
                         <h3 class="font-bold text-lg text-gray-900 group-hover:text-brand-orange transition mb-4 cursor-pointer" onclick="navigate('product', ${p.id})">${p.name}</h3>
                         <div class="mt-auto pt-4 border-t border-gray-50 flex items-center justify-between">
                             <button onclick="navigate('product', ${p.id})" class="text-xs font-bold text-gray-500 hover:text-black transition">Détails <i class="fas fa-arrow-right ml-1"></i></button>
-                            <button onclick="addToCart(${p.id}); event.stopPropagation();" class="bg-black text-white w-10 h-10 rounded-2xl flex items-center justify-center hover:bg-brand-orange transition-all duration-300 transform active:scale-90 shadow-lg">
+                            <button onclick="addToCart(${p.id}, false); event.stopPropagation();" class="bg-black text-white w-10 h-10 rounded-2xl flex items-center justify-center hover:bg-brand-orange transition-all duration-300 transform active:scale-90 shadow-lg">
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
@@ -288,7 +287,7 @@
                         <div class="md:w-1/2 text-center md:text-left">
                             <span class="inline-block bg-brand-orange text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em] mb-6">Expertise 225</span>
                             <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6">Imprimez votre <br><span class="text-brand-orange underline decoration-white/20 underline-offset-8">Succès.</span></h1>
-                            <p class="text-lg text-gray-300 mb-10 max-w-lg mx-auto md:mx-0">Qualité professionnelle, prix imbattables. Votre partenaire de confiance à Abidjan.</p>
+                            <p class="text-lg text-gray-300 mb-10 max-w-lg mx-auto md:mx-0">De l'impression bureautique simple aux kits business complets. Qualité premium garantie.</p>
                             <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                                 <button onclick="navigate('shop')" class="bg-brand-orange hover:bg-brand-orangeHover px-10 py-4 rounded-xl font-bold transition shadow-xl shadow-brand-orange/20">Explorer la boutique</button>
                                 <button onclick="navigate('contact')" class="bg-white/10 hover:bg-white/20 backdrop-blur-md px-10 py-4 rounded-xl font-bold transition">Nous contacter</button>
@@ -298,7 +297,13 @@
                 </section>
                 <section class="py-24 bg-[#fafafa]">
                     <div class="container mx-auto px-4">
-                        <h2 class="text-3xl font-black mb-12 uppercase italic tracking-tighter">Les plus demandés</h2>
+                        <div class="flex justify-between items-end mb-12">
+                            <div>
+                                <h2 class="text-3xl font-black uppercase italic tracking-tighter">Les plus demandés</h2>
+                                <p class="text-gray-400 font-medium">Nos best-sellers de la semaine</p>
+                            </div>
+                            <button onclick="navigate('shop')" class="text-sm font-bold text-brand-orange hover:underline">Tout voir <i class="fas fa-chevron-right ml-1 text-[10px]"></i></button>
+                        </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                             ${popularHtml}
                         </div>
@@ -308,21 +313,35 @@
         }
 
         function renderShop(filter = null) {
-            const filtered = filter ? products.filter(p => p.type === filter) : products;
+            const categories = ['Tous', 'Bureautique', 'Nos Kits', 'Digital', 'Autres'];
+            const filtered = (filter && filter !== 'Tous') ? products.filter(p => p.category === filter) : products;
             const itemsHtml = filtered.map(p => productCard(p)).join('');
+            
             return `
                 <div class="bg-white border-b border-gray-100 py-16">
                     <div class="container mx-auto px-4 text-center">
-                        <h1 class="text-4xl font-extrabold mb-4 uppercase tracking-tighter">Notre Boutique</h1>
-                        <div class="flex flex-wrap justify-center gap-4 mt-8">
-                            <button onclick="navigate('shop')" class="px-6 py-2 rounded-full text-sm font-bold ${!filter ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition">Tous</button>
-                            <button onclick="navigate('shop', 'physique')" class="px-6 py-2 rounded-full text-sm font-bold ${filter === 'physique' ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition">Impression</button>
-                            <button onclick="navigate('shop', 'numerique')" class="px-6 py-2 rounded-full text-sm font-bold ${filter === 'numerique' ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition">Digital</button>
+                        <h1 class="text-4xl font-extrabold mb-4 uppercase tracking-tighter italic">Notre Catalogue</h1>
+                        <div class="flex flex-wrap justify-center gap-3 mt-8">
+                            ${categories.map(cat => `
+                                <button onclick="navigate('shop', '${cat}')" 
+                                    class="category-pill px-6 py-2.5 rounded-full text-sm font-bold transition ${(!filter && cat === 'Tous') || filter === cat ? 'bg-black text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}">
+                                    ${cat}
+                                </button>
+                            `).join('')}
                         </div>
                     </div>
                 </div>
-                <div class="container mx-auto px-4 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    ${itemsHtml}
+                <div class="container mx-auto px-4 py-16">
+                    ${filtered.length > 0 ? `
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            ${itemsHtml}
+                        </div>
+                    ` : `
+                        <div class="text-center py-20">
+                            <i class="fas fa-search text-gray-200 text-6xl mb-6"></i>
+                            <p class="text-gray-400 font-bold">Aucun service trouvé dans cette catégorie.</p>
+                        </div>
+                    `}
                 </div>
             `;
         }
@@ -332,8 +351,8 @@
             if(!p) return `<div class="py-24 text-center">Produit introuvable.</div>`;
             
             const imgHtml = p.isSprite 
-                ? `<div class="w-full h-full sprite-img rounded-3xl shadow-2xl" style="background-image: url('${p.image}'); background-position: ${p.position}; height: 500px;"></div>`
-                : `<img src="${p.image}" class="w-full h-[500px] object-cover rounded-3xl shadow-2xl">`;
+                ? `<div class="w-full h-full sprite-img rounded-3xl" style="background-image: url('${p.image}'); background-position: ${p.position}; min-height: 400px;"></div>`
+                : `<img src="${p.image}" class="w-full h-full object-cover rounded-3xl shadow-2xl min-height: 400px;">`;
 
             return `
                 <div class="container mx-auto px-4 py-16">
@@ -345,14 +364,18 @@
                             ${imgHtml}
                         </div>
                         <div class="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
-                            <span class="text-brand-orange font-black tracking-widest text-xs uppercase mb-4">${p.type}</span>
+                            <span class="text-brand-orange font-black tracking-widest text-xs uppercase mb-4">${p.category}</span>
                             <h1 class="text-4xl font-extrabold mb-4 tracking-tighter">${p.name}</h1>
-                            <p class="text-3xl font-black mb-8">${formatPrice(p.price)}${p.unit || ''}</p>
+                            <div class="flex items-center gap-4 mb-8">
+                                <p class="text-3xl font-black">${formatPrice(p.price)}${p.unit || ''}</p>
+                                ${p.oldPrice ? `<p class="text-lg text-gray-300 line-through font-bold">${formatPrice(p.oldPrice)}</p>` : ''}
+                            </div>
                             <div class="bg-gray-50 p-6 rounded-2xl mb-10 border-l-4 border-brand-orange">
-                                <p class="text-gray-600 leading-relaxed">${p.description}</p>
+                                <p class="text-gray-600 leading-relaxed font-medium">${p.description}</p>
                             </div>
                             <div class="flex flex-col sm:flex-row gap-4">
-                                <button onclick="addToCart(${p.id}, true)" class="flex-1 bg-black text-white font-bold py-5 px-8 rounded-2xl transition text-center hover:bg-brand-orange">Ajouter au panier</button>
+                                <button onclick="addToCart(${p.id}, true)" class="flex-1 bg-black text-white font-bold py-5 px-8 rounded-2xl transition text-center hover:bg-brand-orange shadow-lg shadow-black/10">Ajouter au panier</button>
+                                <button onclick="window.open('https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Bonjour, je souhaite des infos sur : ' + p.name)}')" class="bg-brand-whatsapp text-white p-5 rounded-2xl hover:bg-brand-whatsappHover transition"><i class="fab fa-whatsapp text-2xl"></i></button>
                             </div>
                         </div>
                     </div>
@@ -361,14 +384,14 @@
         }
 
         function renderCart() {
-            if(cart.length === 0) return `<div class="py-32 text-center bg-white"><h2 class="text-3xl font-extrabold mb-4">Panier Vide</h2><button onclick="navigate('shop')" class="bg-black text-white px-10 py-4 rounded-2xl font-bold">Boutique</button></div>`;
+            if(cart.length === 0) return `<div class="py-32 text-center bg-white"><div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-300 text-3xl"><i class="fas fa-shopping-basket"></i></div><h2 class="text-3xl font-extrabold mb-4 uppercase italic">Panier Vide</h2><button onclick="navigate('shop')" class="bg-black text-white px-10 py-4 rounded-2xl font-bold">Retour à la boutique</button></div>`;
             
             let total = 0;
             const itemsHtml = cart.map((item, idx) => {
                 total += item.price * item.quantity;
                 const imgHtml = item.isSprite 
-                    ? `<div class="w-24 h-24 sprite-img rounded-2xl" style="background-image: url('${item.image}'); background-position: ${item.position}; background-size: 300% 200%;"></div>`
-                    : `<img src="${item.image}" class="w-24 h-24 object-cover rounded-2xl">`;
+                    ? `<div class="w-20 h-20 sprite-img rounded-xl shrink-0" style="background-image: url('${item.image}'); background-position: ${item.position}; background-size: 300% 200%;"></div>`
+                    : `<img src="${item.image}" class="w-20 h-20 object-cover rounded-xl shrink-0">`;
 
                 return `
                     <div class="flex flex-col sm:flex-row items-center justify-between py-6 border-b border-gray-50 gap-6">
@@ -382,10 +405,10 @@
                         <div class="flex items-center gap-8 justify-between w-full sm:w-auto">
                             <div class="flex items-center bg-gray-100 rounded-xl px-2">
                                 <button onclick="updateQty(${idx}, -1)" class="p-3 font-black">-</button>
-                                <span class="px-4 font-bold">${item.quantity}</span>
+                                <span class="px-4 font-bold text-sm">${item.quantity}</span>
                                 <button onclick="updateQty(${idx}, 1)" class="p-3 font-black">+</button>
                             </div>
-                            <button onclick="removeFromCart(${idx})" class="text-gray-300 hover:text-red-500"><i class="fas fa-trash-alt"></i></button>
+                            <button onclick="removeFromCart(${idx})" class="text-gray-300 hover:text-red-500 transition"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>
                 `;
@@ -394,15 +417,15 @@
             return `
                 <div class="container mx-auto px-4 py-20 flex flex-col lg:flex-row gap-16">
                     <div class="lg:w-2/3">
-                        <h1 class="text-4xl font-extrabold mb-12 uppercase tracking-tighter italic">Mon Panier</h1>
+                        <h1 class="text-4xl font-extrabold mb-12 uppercase tracking-tighter italic">Récapitulatif</h1>
                         <div class="bg-white p-8 rounded-[40px] shadow-sm border border-gray-100">${itemsHtml}</div>
                     </div>
                     <div class="lg:w-1/3">
                         <div class="bg-white p-10 rounded-[40px] shadow-xl border border-gray-100 sticky top-32 text-center">
-                            <h3 class="font-extrabold text-xl mb-8 uppercase">Total</h3>
-                            <span class="text-4xl font-black text-brand-orange block mb-10">${formatPrice(total)}</span>
-                            <button onclick="openCheckoutModal(cart)" class="w-full bg-brand-whatsapp text-white font-black py-5 rounded-2xl flex items-center justify-center gap-4">
-                                <i class="fab fa-whatsapp text-xl"></i> Commander
+                            <h3 class="font-extrabold text-xl mb-4 uppercase text-gray-400">Total Commande</h3>
+                            <span class="text-4xl font-black text-brand-orange block mb-10 tracking-tighter">${formatPrice(total)}</span>
+                            <button onclick="openCheckoutModal(cart)" class="w-full bg-brand-whatsapp hover:bg-brand-whatsappHover text-white font-black py-5 rounded-2xl flex items-center justify-center gap-4 transition shadow-xl shadow-brand-whatsapp/20">
+                                <i class="fab fa-whatsapp text-xl"></i> Confirmer la commande
                             </button>
                         </div>
                     </div>
@@ -415,17 +438,16 @@
                 <div class="container mx-auto px-4 py-24 text-center max-w-2xl">
                     <div class="bg-white p-16 rounded-[50px] shadow-sm border border-gray-100">
                         <div class="w-20 h-20 bg-brand-orange/10 text-brand-orange rounded-full flex items-center justify-center text-3xl mx-auto mb-10"><i class="fas fa-comments"></i></div>
-                        <h2 class="text-4xl font-extrabold mb-6 tracking-tighter uppercase italic">Contactez-nous</h2>
-                        <p class="text-gray-500 leading-relaxed mb-12">Nos experts vous répondent instantanément sur WhatsApp.</p>
-                        <a href="https://wa.me/${WHATSAPP_NUMBER}" target="_blank" class="inline-block bg-brand-whatsapp text-white px-12 py-5 rounded-2xl font-black">Lancer la discussion</a>
+                        <h2 class="text-4xl font-extrabold mb-6 tracking-tighter uppercase italic">Besoin d'aide ?</h2>
+                        <p class="text-gray-500 leading-relaxed mb-12 font-medium">Nos conseillers sont disponibles pour vos devis personnalisés ou questions techniques.</p>
+                        <a href="https://wa.me/${WHATSAPP_NUMBER}" target="_blank" class="inline-block bg-brand-whatsapp text-white px-12 py-5 rounded-2xl font-black hover:bg-brand-whatsappHover transition-transform hover:scale-105 shadow-xl shadow-brand-whatsapp/10">Lancer la discussion</a>
                     </div>
                 </div>
             `;
         }
 
-        // --- Logique Panier ---
-
-        function addToCart(id, notify = true) {
+        // Logic
+        function addToCart(id, shouldNavigate = true) {
             const p = products.find(prod => prod.id === id);
             const index = cart.findIndex(item => item.id === id);
             if(index > -1) {
@@ -435,7 +457,14 @@
             }
             saveCart();
             updateCartCount();
-            if(notify) navigate('cart');
+            
+            // Animation badge
+            const badge = document.getElementById('cart-count');
+            badge.classList.remove('cart-badge');
+            void badge.offsetWidth;
+            badge.classList.add('cart-badge');
+
+            if(shouldNavigate) navigate('cart');
         }
 
         function updateQty(idx, delta) {
@@ -459,7 +488,8 @@
 
         function openCheckoutModal(items) {
             currentCheckoutItems = items;
-            document.getElementById('checkout-modal').classList.remove('hidden');
+            const modal = document.getElementById('checkout-modal');
+            modal.classList.remove('hidden');
         }
 
         function closeModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
@@ -483,7 +513,6 @@
             closeModal();
         }
 
-        // Init
         window.onload = () => navigate('home');
     </script>
 </body>
