@@ -46,9 +46,14 @@
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #000; border-radius: 10px; }
         
-        /* Modal Animation */
         .modal-overlay { transition: all 0.3s ease; }
         .modal-content { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        /* Style pour les images de type sprite */
+        .sprite-img {
+            background-size: 300% 200%;
+            background-repeat: no-repeat;
+        }
     </style>
 </head>
 <body class="bg-[#fafafa] text-gray-900 flex flex-col min-h-screen selection:bg-brand-orange selection:text-white">
@@ -57,22 +62,19 @@
     <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
         <div class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
-                <!-- Logo -->
                 <div class="text-2xl font-extrabold cursor-pointer flex items-center gap-2 group" onclick="navigate('home')">
-                    <div class="bg-brand-blue p-1.5 rounded-lg group-hover:bg-brand-orange transition-colors">
-                        <i class="fas fa-print text-white text-lg"></i>
+                    <div class="bg-brand-blue p-1.5 rounded-lg group-hover:bg-brand-orange transition-colors text-white flex items-center justify-center">
+                        <i class="fas fa-print text-lg"></i>
                     </div>
                     <span class="tracking-tight">Numé<span class="text-brand-orange">rima</span></span>
                 </div>
 
-                <!-- Navigation Desktop -->
                 <nav class="hidden md:flex items-center space-x-8 font-semibold text-sm">
                     <button onclick="navigate('home')" class="hover:text-brand-orange transition py-2">Accueil</button>
                     <button onclick="navigate('shop')" class="hover:text-brand-orange transition py-2">Nos Services</button>
                     <button onclick="navigate('contact')" class="hover:text-brand-orange transition py-2">Contact</button>
                 </nav>
 
-                <!-- Actions -->
                 <div class="flex items-center space-x-5">
                     <button onclick="navigate('cart')" class="relative p-2 group" title="Mon Panier">
                         <i class="fas fa-shopping-bag text-xl group-hover:text-brand-orange transition"></i>
@@ -84,7 +86,6 @@
                 </div>
             </div>
             
-            <!-- Menu Mobile -->
             <div id="mobile-menu" class="hidden md:hidden absolute left-0 right-0 top-full bg-white border-b shadow-xl p-6 flex flex-col space-y-4 font-bold text-center">
                 <button onclick="navigate('home'); toggleMobileMenu()" class="hover:text-brand-orange">Accueil</button>
                 <button onclick="navigate('shop'); toggleMobileMenu()" class="hover:text-brand-orange">Boutique</button>
@@ -173,16 +174,6 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold uppercase text-gray-400 ml-1">Jour souhaité (Facultatif)</label>
-                        <div class="relative">
-                            <i class="fas fa-calendar absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"></i>
-                            <input type="text" id="cust-day" placeholder="Ex: Samedi matin" class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-brand-orange outline-none transition">
-                        </div>
-                    </div>
-                </div>
-
                 <div class="space-y-1">
                     <label class="text-xs font-bold uppercase text-gray-400 ml-1">Message ou Instruction</label>
                     <div class="relative">
@@ -195,13 +186,11 @@
                     <button type="submit" class="w-full bg-brand-whatsapp hover:bg-brand-whatsappHover text-white font-black py-5 rounded-2xl transition shadow-xl shadow-brand-whatsapp/20 flex items-center justify-center gap-4">
                         <i class="fab fa-whatsapp text-2xl"></i> Envoyer sur WhatsApp
                     </button>
-                    <p class="text-[10px] text-center text-gray-400 mt-4 uppercase font-bold tracking-widest">Traitement immédiat par nos agents</p>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Bouton WhatsApp Flottant -->
     <a href="https://wa.me/2250748872676" target="_blank" class="fixed bottom-6 right-6 bg-brand-whatsapp text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-2xl hover:scale-110 transition z-50">
         <i class="fab fa-whatsapp"></i>
     </a>
@@ -209,27 +198,30 @@
     <script>
         const WHATSAPP_NUMBER = "2250748872676"; 
         
-        const products = [
+        // CONFIGURATION IMAGE PRINCIPALE
+        const MAIN_IMAGE_URL = "https://raw.githubusercontent.com/votre-compte/votre-depot/main/image_d2ce03.jpg";
 
-            { id: 1, name: "Photocopie N&B", type: "Bureautique", price: "25 F", unit: "/ page",image: main/Photocopie-N%26B.png, description: "Canon - Simple face, Papier 70g/80g haute qualité.", popular: true, position: "0% 0%" },
-            {  id: 2, name: "Impression Couleur", type: "Bureautique", price: "100 F", oldPrice: "250 F",unit: "/ page",image: SETTINGS.mainImageUrl, description: "Laser HP M577, rendu professionnel sur papier 80g.", promo: true,position: "50% 0%" },
-            { id: 3, name: "Saisie & Mise en Page", type: "Digital", price: "500 F", oldPrice: "1000 F",unit: "/ page",image: SETTINGS.mainImageUrl, description: "Saisie de texte, mise en forme et correction de documents.", position: "100% 0%" },
-            { id: 4, name: "Numérisation (Scan)", type: "Bureautique", price: "100 F", unit: "/ doc", image: SETTINGS.mainImageUrl, description: "Scan haute résolution vers Email ou clé USB.", position: "0% 100%" },
-            { id: 5, name: "Plastification", type: "Protection", price: "300 F", oldPrice: "500 F",unit: "",image: SETTINGS.mainImageUrl, description: "Protection durable pour vos documents A4 et A3.", position: "50% 100%" },
-            { id: 6, name: "Reliure", type: "Finition", price: "500 F", unit: "- 2500 F", image: SETTINGS.mainImageUrl, description: "Reliure spirale ou thermique pour rapports et mémoires.", position: "100% 100%" },
-            { id: 7, name: "Cartes de Visite Premium", type: "physique", price: 8000, oldPrice: 10000, image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80", description: "Lot de 100 cartes de visite, papier mat 350g avec pelliculage. Design professionnel inclus.", popular: true, promo: true },
-            { id: 8, name: "Flyers A5 Promotionnels", type: "physique", price: 15000, image: "https://images.unsplash.com/photo-1563298723-dcfebaa392e3?auto=format&fit=crop&w=600&q=80", description: "Impression de 100 flyers A5, papier couché brillant 135g. Parfait pour vos événements.", popular: true, promo: false },
-            { id: 9, name: "Ebook : Sourcing Chine", type: "numerique", price: 5000, image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80", description: "Apprenez à importer depuis Alibaba vers l'Afrique comme un pro. Format PDF interactif.", popular: true, promo: false },
-            { id: 10, name: "Template CV Moderne", type: "numerique", price: 2000, image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=600&q=80", description: "Modèle professionnel éditable sur Word pour booster votre carrière.", popular: false, promo: false },
-            { id: 11, name: "Roll-up Publicitaire 85x200", type: "physique", price: 35000, image: "https://images.unsplash.com/photo-1621538356948-4e8ce989ba6e?auto=format&fit=crop&w=600&q=80", description: "Support de communication vertical avec impression HD sur bâche de qualité.", popular: false, promo: false },
-            { id: 12, name: "Coaching E-commerce (1h)", type: "numerique", price: 25000, oldPrice: 40000, image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80", description: "Session de coaching personnalisée pour lancer votre business en ligne.", popular: true, promo: true },
-            { id: 13, name: "Tampon Encreur Officiel", type: "physique", price: 12000, image: "https://images.unsplash.com/photo-1598332120305-649061df4003?auto=format&fit=crop&w=600&q=80", description: "Tampon robuste pour entreprise, personnalisable avec logo.", popular: false, promo: false },
-            { id: 14, name: "Gestion Réseaux Sociaux", type: "numerique", price: 75000, image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=600&q=80", description: "Pack mensuel : Création de visuels et rédaction de posts hebdomadaires.", popular: false, promo: true }
+        const products = [
+            // Services de Bureautique (utilisant le sprite)
+            { id: 1, name: "Photocopie N&B", type: "physique", price: 25, unit: "/ page", image: https://github.com/ehuie-jd/assets-produits/blob/main/Photocopie-N%26B.png, isSprite: true, position: "0% 0%", description: "Canon - Simple face, Papier 70g/80g haute qualité.", popular: true },
+            { id: 2, name: "Impression Couleur", type: "physique", price: 100, oldPrice: 250, unit: "/ page", image: MAIN_IMAGE_URL, isSprite: true, position: "50% 0%", description: "Laser HP M577, rendu professionnel sur papier 80g.", promo: true },
+            { id: 3, name: "Saisie & Mise en Page", type: "numerique", price: 500, oldPrice: 1000, unit: "/ page", image: MAIN_IMAGE_URL, isSprite: true, position: "100% 0%", description: "Saisie de texte, mise en forme et correction de documents." },
+            { id: 4, name: "Numérisation (Scan)", type: "numerique", price: 100, unit: "/ doc", image: MAIN_IMAGE_URL, isSprite: true, position: "0% 100%", description: "Scan haute résolution vers Email ou clé USB." },
+            { id: 5, name: "Plastification", type: "physique", price: 300, oldPrice: 500, unit: "", image: MAIN_IMAGE_URL, isSprite: true, position: "50% 100%", description: "Protection durable pour vos documents A4 et A3." },
+            { id: 6, name: "Reliure", type: "physique", price: 500, unit: "- 2500 F", image: MAIN_IMAGE_URL, isSprite: true, position: "100% 100%", description: "Reliure spirale ou thermique pour rapports et mémoires." },
+            
+            // Autres services (images directes)
+            { id: 7, name: "Cartes de Visite Premium", type: "physique", price: 8000, oldPrice: 10000, image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80", description: "Lot de 100 cartes de visite, papier mat 350g avec pelliculage.", popular: true, promo: true },
+            { id: 8, name: "Flyers A5 Promotionnels", type: "physique", price: 15000, image: "https://images.unsplash.com/photo-1563298723-dcfebaa392e3?auto=format&fit=crop&w=600&q=80", description: "Impression de 100 flyers A5, papier couché brillant 135g.", popular: true },
+            { id: 9, name: "Ebook : Sourcing Chine", type: "numerique", price: 5000, image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80", description: "Apprenez à importer depuis Alibaba vers l'Afrique comme un pro.", popular: true },
+            { id: 10, name: "Template CV Moderne", type: "numerique", price: 2000, image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=600&q=80", description: "Modèle professionnel éditable sur Word pour booster votre carrière." },
+            { id: 11, name: "Roll-up Publicitaire", type: "physique", price: 35000, image: "https://images.unsplash.com/photo-1621538356948-4e8ce989ba6e?auto=format&fit=crop&w=600&q=80", description: "Support vertical avec impression HD sur bâche de qualité." },
+            { id: 12, name: "Coaching E-commerce", type: "numerique", price: 25000, oldPrice: 40000, image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80", description: "Session de coaching personnalisée pour lancer votre business.", popular: true, promo: true }
         ];
 
         let cart = JSON.parse(localStorage.getItem('numerima_cart')) || [];
         const appContent = document.getElementById('app-content');
-        let currentCheckoutItems = []; // Pour stocker ce qu'on commande (un seul ou tout le panier)
+        let currentCheckoutItems = []; 
         
         function formatPrice(p) { return new Intl.NumberFormat('fr-FR').format(p) + ' FCFA'; }
 
@@ -257,17 +249,23 @@
 
         function productCard(p) {
             const badge = p.promo ? `<span class="absolute top-4 left-4 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10">PROMO</span>` : '';
+            
+            // Gestion de l'affichage de l'image (Sprite ou Normal)
+            const imgHtml = p.isSprite 
+                ? `<div class="w-full h-full sprite-img transition duration-700" style="background-image: url('${p.image}'); background-position: ${p.position};"></div>`
+                : `<img src="${p.image}" class="w-full h-full object-cover transition duration-700">`;
+
             return `
                 <div class="product-card group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition duration-500 flex flex-col h-full">
                     <div class="relative h-64 overflow-hidden cursor-pointer bg-gray-100" onclick="navigate('product', ${p.id})">
-                        <img src="${p.image}" class="w-full h-full object-cover transition duration-700">
+                        ${imgHtml}
                         ${badge}
                         <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition duration-300"></div>
                     </div>
                     <div class="p-6 flex flex-col flex-grow">
                         <div class="flex justify-between items-start mb-2">
                             <p class="text-[10px] font-black tracking-widest text-gray-400 uppercase">${p.type === 'physique' ? 'Impression' : 'Digital'}</p>
-                            <span class="text-brand-orange font-bold text-sm">${formatPrice(p.price)}</span>
+                            <span class="text-brand-orange font-bold text-sm">${formatPrice(p.price)}${p.unit || ''}</span>
                         </div>
                         <h3 class="font-bold text-lg text-gray-900 group-hover:text-brand-orange transition mb-4 cursor-pointer" onclick="navigate('product', ${p.id})">${p.name}</h3>
                         <div class="mt-auto pt-4 border-t border-gray-50 flex items-center justify-between">
@@ -290,7 +288,7 @@
                         <div class="md:w-1/2 text-center md:text-left">
                             <span class="inline-block bg-brand-orange text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em] mb-6">Expertise 225</span>
                             <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6">Imprimez votre <br><span class="text-brand-orange underline decoration-white/20 underline-offset-8">Succès.</span></h1>
-                            <p class="text-lg text-gray-300 mb-10 max-w-lg mx-auto md:mx-0">De la carte de visite à votre stratégie digitale, Numérima transforme vos idées en résultats concrets.</p>
+                            <p class="text-lg text-gray-300 mb-10 max-w-lg mx-auto md:mx-0">Qualité professionnelle, prix imbattables. Votre partenaire de confiance à Abidjan.</p>
                             <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                                 <button onclick="navigate('shop')" class="bg-brand-orange hover:bg-brand-orangeHover px-10 py-4 rounded-xl font-bold transition shadow-xl shadow-brand-orange/20">Explorer la boutique</button>
                                 <button onclick="navigate('contact')" class="bg-white/10 hover:bg-white/20 backdrop-blur-md px-10 py-4 rounded-xl font-bold transition">Nous contacter</button>
@@ -299,8 +297,11 @@
                     </div>
                 </section>
                 <section class="py-24 bg-[#fafafa]">
-                    <div class="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        ${popularHtml}
+                    <div class="container mx-auto px-4">
+                        <h2 class="text-3xl font-black mb-12 uppercase italic tracking-tighter">Les plus demandés</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            ${popularHtml}
+                        </div>
                     </div>
                 </section>
             `;
@@ -312,10 +313,10 @@
             return `
                 <div class="bg-white border-b border-gray-100 py-16">
                     <div class="container mx-auto px-4 text-center">
-                        <h1 class="text-4xl font-extrabold mb-4">Notre Boutique</h1>
-                        <div class="flex justify-center gap-4 mt-8">
+                        <h1 class="text-4xl font-extrabold mb-4 uppercase tracking-tighter">Notre Boutique</h1>
+                        <div class="flex flex-wrap justify-center gap-4 mt-8">
                             <button onclick="navigate('shop')" class="px-6 py-2 rounded-full text-sm font-bold ${!filter ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition">Tous</button>
-                            <button onclick="navigate('shop', 'physique')" class="px-6 py-2 rounded-full text-sm font-bold ${filter === 'physique' ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition">Imprimerie</button>
+                            <button onclick="navigate('shop', 'physique')" class="px-6 py-2 rounded-full text-sm font-bold ${filter === 'physique' ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition">Impression</button>
                             <button onclick="navigate('shop', 'numerique')" class="px-6 py-2 rounded-full text-sm font-bold ${filter === 'numerique' ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition">Digital</button>
                         </div>
                     </div>
@@ -329,25 +330,29 @@
         function renderProduct(id) {
             const p = products.find(prod => prod.id === id);
             if(!p) return `<div class="py-24 text-center">Produit introuvable.</div>`;
+            
+            const imgHtml = p.isSprite 
+                ? `<div class="w-full h-full sprite-img rounded-3xl shadow-2xl" style="background-image: url('${p.image}'); background-position: ${p.position}; height: 500px;"></div>`
+                : `<img src="${p.image}" class="w-full h-[500px] object-cover rounded-3xl shadow-2xl">`;
+
             return `
                 <div class="container mx-auto px-4 py-16">
                     <button onclick="navigate('shop')" class="text-gray-400 hover:text-black mb-10 flex items-center gap-2 font-semibold">
-                        <i class="fas fa-arrow-left"></i> Retour à la boutique
+                        <i class="fas fa-arrow-left"></i> Retour
                     </button>
                     <div class="bg-white rounded-[40px] shadow-sm border border-gray-100 overflow-hidden flex flex-col lg:flex-row">
-                        <div class="lg:w-1/2 p-12 bg-[#fafafa]">
-                            <img src="${p.image}" class="w-full h-[500px] object-cover rounded-3xl shadow-2xl">
+                        <div class="lg:w-1/2 p-8 lg:p-12 bg-[#fafafa]">
+                            ${imgHtml}
                         </div>
-                        <div class="lg:w-1/2 p-12 flex flex-col justify-center">
+                        <div class="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
                             <span class="text-brand-orange font-black tracking-widest text-xs uppercase mb-4">${p.type}</span>
-                            <h1 class="text-4xl font-extrabold mb-4">${p.name}</h1>
-                            <p class="text-3xl font-bold mb-8">${formatPrice(p.price)}</p>
+                            <h1 class="text-4xl font-extrabold mb-4 tracking-tighter">${p.name}</h1>
+                            <p class="text-3xl font-black mb-8">${formatPrice(p.price)}${p.unit || ''}</p>
                             <div class="bg-gray-50 p-6 rounded-2xl mb-10 border-l-4 border-brand-orange">
                                 <p class="text-gray-600 leading-relaxed">${p.description}</p>
                             </div>
                             <div class="flex flex-col sm:flex-row gap-4">
-                                <button onclick="addToCart(${p.id}, false); this.innerText='Ajouté !'; setTimeout(() => this.innerText='Ajouter au panier', 2000)" class="flex-1 border-2 border-black hover:bg-gray-50 text-black font-bold py-5 px-8 rounded-2xl transition">Ajouter au panier</button>
-                                <button onclick="openCheckoutModal([{id:${p.id}, name:'${p.name.replace(/'/g, "\\'")}', price:${p.price}, quantity:1}])" class="flex-1 bg-black text-white font-bold py-5 px-8 rounded-2xl transition text-center">Acheter maintenant</button>
+                                <button onclick="addToCart(${p.id}, true)" class="flex-1 bg-black text-white font-bold py-5 px-8 rounded-2xl transition text-center hover:bg-brand-orange">Ajouter au panier</button>
                             </div>
                         </div>
                     </div>
@@ -356,15 +361,19 @@
         }
 
         function renderCart() {
-            if(cart.length === 0) return `<div class="py-32 text-center bg-white"><div class="mb-6 text-gray-200"><i class="fas fa-shopping-bag text-8xl"></i></div><h2 class="text-3xl font-extrabold mb-4">Votre panier est vide</h2><p class="text-gray-500 mb-10">Découvrez nos services d'impression et digital.</p><button onclick="navigate('shop')" class="bg-black text-white px-10 py-4 rounded-2xl font-bold">Voir la boutique</button></div>`;
+            if(cart.length === 0) return `<div class="py-32 text-center bg-white"><h2 class="text-3xl font-extrabold mb-4">Panier Vide</h2><button onclick="navigate('shop')" class="bg-black text-white px-10 py-4 rounded-2xl font-bold">Boutique</button></div>`;
             
             let total = 0;
             const itemsHtml = cart.map((item, idx) => {
                 total += item.price * item.quantity;
+                const imgHtml = item.isSprite 
+                    ? `<div class="w-24 h-24 sprite-img rounded-2xl" style="background-image: url('${item.image}'); background-position: ${item.position}; background-size: 300% 200%;"></div>`
+                    : `<img src="${item.image}" class="w-24 h-24 object-cover rounded-2xl">`;
+
                 return `
-                    <div class="flex flex-col sm:flex-row items-center justify-between py-8 border-b border-gray-50 gap-6">
+                    <div class="flex flex-col sm:flex-row items-center justify-between py-6 border-b border-gray-50 gap-6">
                         <div class="flex items-center gap-6 w-full">
-                            <img src="${item.image}" class="w-24 h-24 object-cover rounded-2xl shadow-sm">
+                            ${imgHtml}
                             <div>
                                 <h4 class="font-extrabold text-lg">${item.name}</h4>
                                 <p class="text-brand-orange font-bold text-sm">${formatPrice(item.price)}</p>
@@ -372,11 +381,11 @@
                         </div>
                         <div class="flex items-center gap-8 justify-between w-full sm:w-auto">
                             <div class="flex items-center bg-gray-100 rounded-xl px-2">
-                                <button onclick="updateQty(${idx}, -1)" class="p-3 text-gray-500 hover:text-black font-black text-lg">-</button>
-                                <span class="px-4 font-bold min-w-[40px] text-center">${item.quantity}</span>
-                                <button onclick="updateQty(${idx}, 1)" class="p-3 text-gray-500 hover:text-black font-black text-lg">+</button>
+                                <button onclick="updateQty(${idx}, -1)" class="p-3 font-black">-</button>
+                                <span class="px-4 font-bold">${item.quantity}</span>
+                                <button onclick="updateQty(${idx}, 1)" class="p-3 font-black">+</button>
                             </div>
-                            <button onclick="removeFromCart(${idx})" class="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-red-500 transition"><i class="fas fa-trash-alt"></i></button>
+                            <button onclick="removeFromCart(${idx})" class="text-gray-300 hover:text-red-500"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>
                 `;
@@ -385,21 +394,15 @@
             return `
                 <div class="container mx-auto px-4 py-20 flex flex-col lg:flex-row gap-16">
                     <div class="lg:w-2/3">
-                        <h1 class="text-4xl font-extrabold mb-12">Mon Panier <span class="text-gray-300 text-2xl font-light ml-2">(${cart.length})</span></h1>
+                        <h1 class="text-4xl font-extrabold mb-12 uppercase tracking-tighter italic">Mon Panier</h1>
                         <div class="bg-white p-8 rounded-[40px] shadow-sm border border-gray-100">${itemsHtml}</div>
                     </div>
                     <div class="lg:w-1/3">
-                        <div class="bg-white p-10 rounded-[40px] shadow-xl border border-gray-100 sticky top-32">
-                            <h3 class="font-extrabold text-xl mb-8">Récapitulatif</h3>
-                            <div class="space-y-4 mb-8">
-                                <div class="flex justify-between text-gray-500 text-sm"><span>Total produits</span><span>${formatPrice(total)}</span></div>
-                                <div class="flex justify-between items-end pt-6 border-t border-gray-100 mt-6">
-                                    <span class="font-bold text-lg">Total</span>
-                                    <span class="text-3xl font-black text-brand-orange">${formatPrice(total)}</span>
-                                </div>
-                            </div>
-                            <button onclick="openCheckoutModal(cart)" class="w-full bg-brand-whatsapp hover:bg-brand-whatsappHover text-white font-bold py-5 rounded-2xl transition shadow-xl shadow-brand-whatsapp/20 flex items-center justify-center gap-4">
-                                <i class="fab fa-whatsapp text-xl"></i> Commander tout
+                        <div class="bg-white p-10 rounded-[40px] shadow-xl border border-gray-100 sticky top-32 text-center">
+                            <h3 class="font-extrabold text-xl mb-8 uppercase">Total</h3>
+                            <span class="text-4xl font-black text-brand-orange block mb-10">${formatPrice(total)}</span>
+                            <button onclick="openCheckoutModal(cart)" class="w-full bg-brand-whatsapp text-white font-black py-5 rounded-2xl flex items-center justify-center gap-4">
+                                <i class="fab fa-whatsapp text-xl"></i> Commander
                             </button>
                         </div>
                     </div>
@@ -411,95 +414,34 @@
             return `
                 <div class="container mx-auto px-4 py-24 text-center max-w-2xl">
                     <div class="bg-white p-16 rounded-[50px] shadow-sm border border-gray-100">
-                        <div class="w-24 h-24 bg-brand-orange/10 text-brand-orange rounded-full flex items-center justify-center text-4xl mx-auto mb-10"><i class="fas fa-comments"></i></div>
-                        <h2 class="text-4xl font-extrabold mb-6 tracking-tight">Besoin d'un devis ?</h2>
-                        <p class="text-gray-500 leading-relaxed mb-12 text-lg">Nos experts vous répondent instantanément sur WhatsApp pour vos projets spécifiques.</p>
-                        <a href="https://wa.me/${WHATSAPP_NUMBER}" target="_blank" class="inline-block bg-brand-whatsapp text-white px-12 py-5 rounded-2xl font-bold">Démarrer la discussion</a>
+                        <div class="w-20 h-20 bg-brand-orange/10 text-brand-orange rounded-full flex items-center justify-center text-3xl mx-auto mb-10"><i class="fas fa-comments"></i></div>
+                        <h2 class="text-4xl font-extrabold mb-6 tracking-tighter uppercase italic">Contactez-nous</h2>
+                        <p class="text-gray-500 leading-relaxed mb-12">Nos experts vous répondent instantanément sur WhatsApp.</p>
+                        <a href="https://wa.me/${WHATSAPP_NUMBER}" target="_blank" class="inline-block bg-brand-whatsapp text-white px-12 py-5 rounded-2xl font-black">Lancer la discussion</a>
                     </div>
                 </div>
             `;
         }
 
-        // --- Fonctions de Checkout ---
+        // --- Logique Panier ---
 
-        function openCheckoutModal(items) {
-            currentCheckoutItems = items;
-            const modal = document.getElementById('checkout-modal');
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            document.getElementById('checkout-modal').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-
-        function handleOrderSubmit(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('cust-name').value;
-            const phone = document.getElementById('cust-phone').value;
-            const location = document.getElementById('cust-location').value;
-            const day = document.getElementById('cust-day').value;
-            const messageNote = document.getElementById('cust-message').value;
-
-            let total = 0;
-            let itemsListText = "";
-            currentCheckoutItems.forEach(item => {
-                const sub = item.price * item.quantity;
-                total += sub;
-                itemsListText += `- ${item.quantity}x ${item.name} (${formatPrice(sub)})\n`;
-            });
-
-            const finalMessage = `*NOUVELLE COMMANDE NUMÉRIMA*\n\n` +
-                                `👤 *CLIENT:* ${name}\n` +
-                                `📞 *TÉL:* ${phone}\n` +
-                                `📍 *LIVRAISON:* ${location}\n` +
-                                `📅 *DATE:* ${day || 'Dès que possible'}\n\n` +
-                                `📦 *DÉTAILS PANIER :*\n${itemsListText}\n` +
-                                `💰 *TOTAL : ${formatPrice(total)}*\n\n` +
-                                `💬 *NOTE:* ${messageNote || 'Aucune'}\n\n` +
-                                `_Commande envoyée depuis le catalogue en ligne._`;
-
-            const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(finalMessage)}`;
-            
-            // Ouvrir WhatsApp
-            window.open(url, '_blank');
-            
-            // Optionnel : Vider le panier si c'était une commande globale
-            if(currentCheckoutItems.length === cart.length) {
-                cart = [];
-                saveCart();
-                updateCartCount();
+        function addToCart(id, notify = true) {
+            const p = products.find(prod => prod.id === id);
+            const index = cart.findIndex(item => item.id === id);
+            if(index > -1) {
+                cart[index].quantity++;
+            } else {
+                cart.push({...p, quantity: 1});
             }
-            
-            closeModal();
-            navigate('home');
-        }
-
-        // --- Utilitaires Panier ---
-
-        function addToCart(pId, redirect = false) {
-            const p = products.find(prod => prod.id === pId);
-            const exists = cart.find(item => item.id === pId);
-            if(exists) exists.quantity += 1;
-            else cart.push({...p, quantity: 1});
             saveCart();
             updateCartCount();
-            
-            const badge = document.getElementById('cart-count');
-            badge.classList.remove('cart-badge');
-            void badge.offsetWidth;
-            badge.classList.add('cart-badge');
-
-            if(redirect) navigate('cart');
+            if(notify) navigate('cart');
         }
 
         function updateQty(idx, delta) {
             cart[idx].quantity += delta;
-            if(cart[idx].quantity <= 0) cart.splice(idx, 1);
+            if(cart[idx].quantity < 1) cart[idx].quantity = 1;
             saveCart();
-            renderCart();
             navigate('cart');
         }
 
@@ -511,10 +453,37 @@
 
         function saveCart() { localStorage.setItem('numerima_cart', JSON.stringify(cart)); }
         function updateCartCount() {
-            const total = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.getElementById('cart-count').innerText = total;
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').innerText = count;
         }
 
+        function openCheckoutModal(items) {
+            currentCheckoutItems = items;
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
+
+        function handleOrderSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const location = document.getElementById('cust-location').value;
+            const msg = document.getElementById('cust-message').value;
+
+            let total = 0;
+            let itemsText = "";
+            currentCheckoutItems.forEach(item => {
+                total += item.price * item.quantity;
+                itemsText += `- ${item.name} (x${item.quantity})\n`;
+            });
+
+            const text = `*NOUVELLE COMMANDE - NUMÉRIMA*\n\n*Client:* ${name}\n*Tél:* ${phone}\n*Livraison:* ${location}\n\n*Articles:*\n${itemsText}\n*TOTAL:* ${formatPrice(total)}\n\n*Note:* ${msg}`;
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`);
+            closeModal();
+        }
+
+        // Init
         window.onload = () => navigate('home');
     </script>
 </body>
