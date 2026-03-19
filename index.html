@@ -30,7 +30,7 @@
         }
     </script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
         .fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(15px); }
@@ -45,6 +45,10 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #000; border-radius: 10px; }
+        
+        /* Modal Animation */
+        .modal-overlay { transition: all 0.3s ease; }
+        .modal-content { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
     </style>
 </head>
 <body class="bg-[#fafafa] text-gray-900 flex flex-col min-h-screen selection:bg-brand-orange selection:text-white">
@@ -135,6 +139,68 @@
         </div>
     </footer>
 
+    <!-- Fenêtre Modale Livraison -->
+    <div id="checkout-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="modal-overlay absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="modal-content absolute bottom-0 left-0 right-0 sm:inset-x-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-lg bg-white rounded-t-[3rem] sm:rounded-[2.5rem] p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-black">Finaliser la commande</h3>
+                <button onclick="closeModal()" class="bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <form id="order-form" onsubmit="handleOrderSubmit(event)" class="space-y-4">
+                <div class="space-y-1">
+                    <label class="text-xs font-bold uppercase text-gray-400 ml-1">Nom Complet</label>
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                        <input type="text" id="cust-name" required placeholder="Ex: Jean Koffi" class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-brand-orange outline-none transition">
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-xs font-bold uppercase text-gray-400 ml-1">Téléphone</label>
+                    <div class="relative">
+                        <i class="fas fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                        <input type="tel" id="cust-phone" required placeholder="07 00 00 00 00" class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-brand-orange outline-none transition">
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-xs font-bold uppercase text-gray-400 ml-1">Lieu de livraison</label>
+                    <div class="relative">
+                        <i class="fas fa-map-marker-alt absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                        <input type="text" id="cust-location" required placeholder="Ex: Cocody Angré 7ème" class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-brand-orange outline-none transition">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold uppercase text-gray-400 ml-1">Jour souhaité (Facultatif)</label>
+                        <div class="relative">
+                            <i class="fas fa-calendar absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                            <input type="text" id="cust-day" placeholder="Ex: Samedi matin" class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-brand-orange outline-none transition">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-xs font-bold uppercase text-gray-400 ml-1">Message ou Instruction</label>
+                    <div class="relative">
+                        <i class="fas fa-comment absolute left-4 top-4 text-gray-300"></i>
+                        <textarea id="cust-message" rows="2" placeholder="Ex: Appelez-moi avant d'arriver..." class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-brand-orange outline-none transition resize-none"></textarea>
+                    </div>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-brand-whatsapp hover:bg-brand-whatsappHover text-white font-black py-5 rounded-2xl transition shadow-xl shadow-brand-whatsapp/20 flex items-center justify-center gap-4">
+                        <i class="fab fa-whatsapp text-2xl"></i> Envoyer sur WhatsApp
+                    </button>
+                    <p class="text-[10px] text-center text-gray-400 mt-4 uppercase font-bold tracking-widest">Traitement immédiat par nos agents</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Bouton WhatsApp Flottant -->
     <a href="https://wa.me/2250748872676" target="_blank" class="fixed bottom-6 right-6 bg-brand-whatsapp text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-2xl hover:scale-110 transition z-50">
         <i class="fab fa-whatsapp"></i>
@@ -156,6 +222,7 @@
 
         let cart = JSON.parse(localStorage.getItem('numerima_cart')) || [];
         const appContent = document.getElementById('app-content');
+        let currentCheckoutItems = []; // Pour stocker ce qu'on commande (un seul ou tout le panier)
         
         function formatPrice(p) { return new Intl.NumberFormat('fr-FR').format(p) + ' FCFA'; }
 
@@ -164,7 +231,7 @@
             updateCartCount();
             appContent.innerHTML = '';
             appContent.classList.remove('fade-in');
-            void appContent.offsetWidth; // Trigger reflow
+            void appContent.offsetWidth;
             appContent.classList.add('fade-in');
 
             switch(page) {
@@ -179,89 +246,6 @@
 
         function toggleMobileMenu() {
             document.getElementById('mobile-menu').classList.toggle('hidden');
-        }
-
-        function renderHome() {
-            const popularHtml = products.filter(p => p.popular).map(p => productCard(p)).join('');
-            return `
-                <section class="relative bg-black text-white py-24 overflow-hidden">
-                    <div class="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1562564055-71e051d33c19?auto=format&fit=crop&w=1500&q=80')] bg-cover bg-center"></div>
-                    <div class="container mx-auto px-4 relative z-10 flex flex-col md:flex-row items-center gap-12">
-                        <div class="md:w-1/2 text-center md:text-left">
-                            <span class="inline-block bg-brand-orange text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em] mb-6">Expertise 225</span>
-                            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6">Imprimez votre <br><span class="text-brand-orange underline decoration-white/20 underline-offset-8">Succès.</span></h1>
-                            <p class="text-lg text-gray-300 mb-10 max-w-lg mx-auto md:mx-0">De la carte de visite à votre stratégie digitale, Numérima transforme vos idées en résultats concrets.</p>
-                            <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                                <button onclick="navigate('shop')" class="bg-brand-orange hover:bg-brand-orangeHover px-10 py-4 rounded-xl font-bold transition shadow-xl shadow-brand-orange/20">Explorer la boutique</button>
-                                <button onclick="navigate('contact')" class="bg-white/10 hover:bg-white/20 backdrop-blur-md px-10 py-4 rounded-xl font-bold transition">Nous contacter</button>
-                            </div>
-                        </div>
-                        <div class="md:w-1/2 hidden md:block group">
-                            <div class="relative">
-                                <div class="absolute -inset-4 bg-brand-orange/20 rounded-2xl blur-2xl group-hover:bg-brand-orange/30 transition duration-500"></div>
-                                <img src="https://images.unsplash.com/photo-1603536348611-1378f8982f6e?auto=format&fit=crop&w=800&q=80" class="relative rounded-2xl shadow-2xl grayscale group-hover:grayscale-0 transition duration-700">
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="py-20 bg-white">
-                    <div class="container mx-auto px-4 text-center mb-16">
-                        <h2 class="text-3xl font-extrabold mb-4">Pourquoi nous choisir ?</h2>
-                        <div class="w-20 h-1 bg-brand-orange mx-auto"></div>
-                    </div>
-                    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-                        <div class="p-8 rounded-3xl bg-[#fafafa] border border-gray-100">
-                            <div class="w-16 h-16 bg-white shadow-sm rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl text-brand-orange"><i class="fas fa-gem"></i></div>
-                            <h3 class="font-bold text-xl mb-3">Qualité Premium</h3>
-                            <p class="text-gray-500 text-sm">Nous utilisons les meilleurs papiers et technologies pour un rendu professionnel.</p>
-                        </div>
-                        <div class="p-8 rounded-3xl bg-[#fafafa] border border-gray-100">
-                            <div class="w-16 h-16 bg-white shadow-sm rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl text-brand-orange"><i class="fas fa-bolt"></i></div>
-                            <h3 class="font-bold text-xl mb-3">Rapidité</h3>
-                            <p class="text-gray-500 text-sm">Vos commandes sont traitées et livrées dans les meilleurs délais sur Abidjan.</p>
-                        </div>
-                        <div class="p-8 rounded-3xl bg-[#fafafa] border border-gray-100">
-                            <div class="w-16 h-16 bg-white shadow-sm rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl text-brand-orange"><i class="fas fa-headset"></i></div>
-                            <h3 class="font-bold text-xl mb-3">Support Actif</h3>
-                            <p class="text-gray-500 text-sm">Notre équipe est disponible sur WhatsApp pour vous conseiller en direct.</p>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="py-24 bg-[#fafafa]">
-                    <div class="container mx-auto px-4 flex justify-between items-end mb-12">
-                        <div>
-                            <h2 class="text-3xl font-extrabold">Nos Incontournables</h2>
-                            <p class="text-gray-500 mt-2">Les supports préférés de nos clients.</p>
-                        </div>
-                        <button onclick="navigate('shop')" class="text-brand-orange font-bold hover:underline">Voir tout le catalogue <i class="fas fa-chevron-right text-xs ml-1"></i></button>
-                    </div>
-                    <div class="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        ${popularHtml}
-                    </div>
-                </section>
-            `;
-        }
-
-        function renderShop(filter = null) {
-            const filtered = filter ? products.filter(p => p.type === filter) : products;
-            const itemsHtml = filtered.map(p => productCard(p)).join('');
-            return `
-                <div class="bg-white border-b border-gray-100 py-16">
-                    <div class="container mx-auto px-4 text-center">
-                        <h1 class="text-4xl font-extrabold mb-4">Notre Boutique</h1>
-                        <div class="flex justify-center gap-4 mt-8">
-                            <button onclick="navigate('shop')" class="px-6 py-2 rounded-full text-sm font-bold ${!filter ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition">Tous</button>
-                            <button onclick="navigate('shop', 'physique')" class="px-6 py-2 rounded-full text-sm font-bold ${filter === 'physique' ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition">Imprimerie</button>
-                            <button onclick="navigate('shop', 'numerique')" class="px-6 py-2 rounded-full text-sm font-bold ${filter === 'numerique' ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition">Digital</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="container mx-auto px-4 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    ${itemsHtml}
-                </div>
-            `;
         }
 
         function productCard(p) {
@@ -290,6 +274,51 @@
             `;
         }
 
+        function renderHome() {
+            const popularHtml = products.filter(p => p.popular).map(p => productCard(p)).join('');
+            return `
+                <section class="relative bg-black text-white py-24 overflow-hidden">
+                    <div class="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1562564055-71e051d33c19?auto=format&fit=crop&w=1500&q=80')] bg-cover bg-center"></div>
+                    <div class="container mx-auto px-4 relative z-10 flex flex-col md:flex-row items-center gap-12">
+                        <div class="md:w-1/2 text-center md:text-left">
+                            <span class="inline-block bg-brand-orange text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em] mb-6">Expertise 225</span>
+                            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6">Imprimez votre <br><span class="text-brand-orange underline decoration-white/20 underline-offset-8">Succès.</span></h1>
+                            <p class="text-lg text-gray-300 mb-10 max-w-lg mx-auto md:mx-0">De la carte de visite à votre stratégie digitale, Numérima transforme vos idées en résultats concrets.</p>
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                                <button onclick="navigate('shop')" class="bg-brand-orange hover:bg-brand-orangeHover px-10 py-4 rounded-xl font-bold transition shadow-xl shadow-brand-orange/20">Explorer la boutique</button>
+                                <button onclick="navigate('contact')" class="bg-white/10 hover:bg-white/20 backdrop-blur-md px-10 py-4 rounded-xl font-bold transition">Nous contacter</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="py-24 bg-[#fafafa]">
+                    <div class="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        ${popularHtml}
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderShop(filter = null) {
+            const filtered = filter ? products.filter(p => p.type === filter) : products;
+            const itemsHtml = filtered.map(p => productCard(p)).join('');
+            return `
+                <div class="bg-white border-b border-gray-100 py-16">
+                    <div class="container mx-auto px-4 text-center">
+                        <h1 class="text-4xl font-extrabold mb-4">Notre Boutique</h1>
+                        <div class="flex justify-center gap-4 mt-8">
+                            <button onclick="navigate('shop')" class="px-6 py-2 rounded-full text-sm font-bold ${!filter ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition">Tous</button>
+                            <button onclick="navigate('shop', 'physique')" class="px-6 py-2 rounded-full text-sm font-bold ${filter === 'physique' ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition">Imprimerie</button>
+                            <button onclick="navigate('shop', 'numerique')" class="px-6 py-2 rounded-full text-sm font-bold ${filter === 'numerique' ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition">Digital</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="container mx-auto px-4 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    ${itemsHtml}
+                </div>
+            `;
+        }
+
         function renderProduct(id) {
             const p = products.find(prod => prod.id === id);
             if(!p) return `<div class="py-24 text-center">Produit introuvable.</div>`;
@@ -310,10 +339,8 @@
                                 <p class="text-gray-600 leading-relaxed">${p.description}</p>
                             </div>
                             <div class="flex flex-col sm:flex-row gap-4">
-                                <button onclick="addToCart(${p.id}, true)" class="flex-1 bg-black hover:bg-gray-800 text-white font-bold py-5 px-8 rounded-2xl transition">Ajouter au panier</button>
-                                <a href="https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Bonjour Numérima, je souhaite commander : ' + p.name)}" target="_blank" class="flex-1 bg-brand-whatsapp hover:bg-brand-whatsappHover text-white font-bold py-5 px-8 rounded-2xl transition text-center flex items-center justify-center gap-3">
-                                    <i class="fab fa-whatsapp text-xl"></i> Acheter direct
-                                </a>
+                                <button onclick="addToCart(${p.id}, false); this.innerText='Ajouté !'; setTimeout(() => this.innerText='Ajouter au panier', 2000)" class="flex-1 border-2 border-black hover:bg-gray-50 text-black font-bold py-5 px-8 rounded-2xl transition">Ajouter au panier</button>
+                                <button onclick="openCheckoutModal([{id:${p.id}, name:'${p.name.replace(/'/g, "\\'")}', price:${p.price}, quantity:1}])" class="flex-1 bg-black text-white font-bold py-5 px-8 rounded-2xl transition text-center">Acheter maintenant</button>
                             </div>
                         </div>
                     </div>
@@ -351,24 +378,22 @@
             return `
                 <div class="container mx-auto px-4 py-20 flex flex-col lg:flex-row gap-16">
                     <div class="lg:w-2/3">
-                        <h1 class="text-4xl font-extrabold mb-12">Mon Panier <span class="text-gray-300 text-2xl font-light ml-2">(${cart.length} articles)</span></h1>
+                        <h1 class="text-4xl font-extrabold mb-12">Mon Panier <span class="text-gray-300 text-2xl font-light ml-2">(${cart.length})</span></h1>
                         <div class="bg-white p-8 rounded-[40px] shadow-sm border border-gray-100">${itemsHtml}</div>
                     </div>
                     <div class="lg:w-1/3">
                         <div class="bg-white p-10 rounded-[40px] shadow-xl border border-gray-100 sticky top-32">
                             <h3 class="font-extrabold text-xl mb-8">Récapitulatif</h3>
                             <div class="space-y-4 mb-8">
-                                <div class="flex justify-between text-gray-500 text-sm"><span>Sous-total</span><span>${formatPrice(total)}</span></div>
-                                <div class="flex justify-between text-gray-500 text-sm"><span>Livraison</span><span class="text-green-600 font-bold">À convenir</span></div>
-                                <div class="border-t border-gray-100 pt-6 mt-6 flex justify-between items-end">
+                                <div class="flex justify-between text-gray-500 text-sm"><span>Total produits</span><span>${formatPrice(total)}</span></div>
+                                <div class="flex justify-between items-end pt-6 border-t border-gray-100 mt-6">
                                     <span class="font-bold text-lg">Total</span>
                                     <span class="text-3xl font-black text-brand-orange">${formatPrice(total)}</span>
                                 </div>
                             </div>
-                            <button onclick="checkoutViaWhatsApp()" class="w-full bg-brand-whatsapp hover:bg-brand-whatsappHover text-white font-bold py-5 rounded-2xl transition shadow-xl shadow-brand-whatsapp/20 flex items-center justify-center gap-4">
-                                <i class="fab fa-whatsapp text-xl"></i> Finaliser sur WhatsApp
+                            <button onclick="openCheckoutModal(cart)" class="w-full bg-brand-whatsapp hover:bg-brand-whatsappHover text-white font-bold py-5 rounded-2xl transition shadow-xl shadow-brand-whatsapp/20 flex items-center justify-center gap-4">
+                                <i class="fab fa-whatsapp text-xl"></i> Commander tout
                             </button>
-                            <p class="text-center text-[10px] text-gray-400 mt-6 px-4 uppercase tracking-widest font-bold">Paiement sécurisé via Orange/MTN Money</p>
                         </div>
                     </div>
                 </div>
@@ -380,13 +405,72 @@
                 <div class="container mx-auto px-4 py-24 text-center max-w-2xl">
                     <div class="bg-white p-16 rounded-[50px] shadow-sm border border-gray-100">
                         <div class="w-24 h-24 bg-brand-orange/10 text-brand-orange rounded-full flex items-center justify-center text-4xl mx-auto mb-10"><i class="fas fa-comments"></i></div>
-                        <h2 class="text-4xl font-extrabold mb-6 tracking-tight">Besoin d'un devis sur mesure ?</h2>
-                        <p class="text-gray-500 leading-relaxed mb-12 text-lg">Nos experts vous répondent instantanément sur WhatsApp pour vos projets spécifiques (Imprimerie grand format, packaging, ou consulting).</p>
-                        <a href="https://wa.me/${WHATSAPP_NUMBER}" target="_blank" class="inline-block bg-brand-whatsapp text-white px-12 py-5 rounded-2xl font-bold shadow-2xl hover:bg-brand-whatsappHover transition hover:scale-105 duration-300">Démarrer la discussion</a>
+                        <h2 class="text-4xl font-extrabold mb-6 tracking-tight">Besoin d'un devis ?</h2>
+                        <p class="text-gray-500 leading-relaxed mb-12 text-lg">Nos experts vous répondent instantanément sur WhatsApp pour vos projets spécifiques.</p>
+                        <a href="https://wa.me/${WHATSAPP_NUMBER}" target="_blank" class="inline-block bg-brand-whatsapp text-white px-12 py-5 rounded-2xl font-bold">Démarrer la discussion</a>
                     </div>
                 </div>
             `;
         }
+
+        // --- Fonctions de Checkout ---
+
+        function openCheckoutModal(items) {
+            currentCheckoutItems = items;
+            const modal = document.getElementById('checkout-modal');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function handleOrderSubmit(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const location = document.getElementById('cust-location').value;
+            const day = document.getElementById('cust-day').value;
+            const messageNote = document.getElementById('cust-message').value;
+
+            let total = 0;
+            let itemsListText = "";
+            currentCheckoutItems.forEach(item => {
+                const sub = item.price * item.quantity;
+                total += sub;
+                itemsListText += `- ${item.quantity}x ${item.name} (${formatPrice(sub)})\n`;
+            });
+
+            const finalMessage = `*NOUVELLE COMMANDE NUMÉRIMA*\n\n` +
+                                `👤 *CLIENT:* ${name}\n` +
+                                `📞 *TÉL:* ${phone}\n` +
+                                `📍 *LIVRAISON:* ${location}\n` +
+                                `📅 *DATE:* ${day || 'Dès que possible'}\n\n` +
+                                `📦 *DÉTAILS PANIER :*\n${itemsListText}\n` +
+                                `💰 *TOTAL : ${formatPrice(total)}*\n\n` +
+                                `💬 *NOTE:* ${messageNote || 'Aucune'}\n\n` +
+                                `_Commande envoyée depuis le catalogue en ligne._`;
+
+            const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(finalMessage)}`;
+            
+            // Ouvrir WhatsApp
+            window.open(url, '_blank');
+            
+            // Optionnel : Vider le panier si c'était une commande globale
+            if(currentCheckoutItems.length === cart.length) {
+                cart = [];
+                saveCart();
+                updateCartCount();
+            }
+            
+            closeModal();
+            navigate('home');
+        }
+
+        // --- Utilitaires Panier ---
 
         function addToCart(pId, redirect = false) {
             const p = products.find(prod => prod.id === pId);
@@ -422,19 +506,6 @@
         function updateCartCount() {
             const total = cart.reduce((sum, item) => sum + item.quantity, 0);
             document.getElementById('cart-count').innerText = total;
-        }
-
-        function checkoutViaWhatsApp() {
-            if (cart.length === 0) return;
-            let msg = "*🛒 NOUVELLE COMMANDE NUMÉRIMA*\n\n";
-            let total = 0;
-            cart.forEach(item => {
-                let sub = item.price * item.quantity;
-                total += sub;
-                msg += `🔹 ${item.quantity}x ${item.name} (${formatPrice(sub)})\n`;
-            });
-            msg += `\n*💰 TOTAL : ${formatPrice(total)}*\n\nBonjour Numérima, voici mon panier. Quelles sont les prochaines étapes ?`;
-            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         window.onload = () => navigate('home');
