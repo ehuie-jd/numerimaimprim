@@ -211,79 +211,20 @@
         
         const products = [
 
-               { 
-      id: 1, 
-      name: "Photocopie N&B", 
-      type: "Bureautique", 
-      price: "25 F", 
-      unit: "/ page",
-      image: main/Photocopie-N%26B.png, 
-      description: "Canon - Simple face, Papier 70g/80g haute qualité.", 
-      popular: true, 
-      position: "0% 0%" 
-    },
-    { 
-      id: 2, 
-      name: "Impression Couleur", 
-      type: "Bureautique", 
-      price: "100 F", 
-      oldPrice: "250 F",
-      unit: "/ page",
-      image: SETTINGS.mainImageUrl, 
-      description: "Laser HP M577, rendu professionnel sur papier 80g.", 
-      promo: true,
-      position: "50% 0%" 
-    },
-    { 
-      id: 3, 
-      name: "Saisie & Mise en Page", 
-      type: "Digital", 
-      price: "500 F", 
-      oldPrice: "1000 F",
-      unit: "/ page",
-      image: SETTINGS.mainImageUrl, 
-      description: "Saisie de texte, mise en forme et correction de documents.", 
-      position: "100% 0%" 
-    },
-    { 
-      id: 4, 
-      name: "Numérisation (Scan)", 
-      type: "Bureautique", 
-      price: "100 F", 
-      unit: "/ doc",
-      image: SETTINGS.mainImageUrl, 
-      description: "Scan haute résolution vers Email ou clé USB.", 
-      position: "0% 100%" 
-    },
-    { 
-      id: 5, 
-      name: "Plastification", 
-      type: "Protection", 
-      price: "300 F", 
-      oldPrice: "500 F",
-      unit: "",
-      image: SETTINGS.mainImageUrl, 
-      description: "Protection durable pour vos documents A4 et A3.", 
-      position: "50% 100%" 
-    },
-    { 
-      id: 6, 
-      name: "Reliure", 
-      type: "Finition", 
-      price: "500 F", 
-      unit: "- 2500 F",
-      image: SETTINGS.mainImageUrl, 
-      description: "Reliure spirale ou thermique pour rapports et mémoires.", 
-      position: "100% 100%" 
-    }
-            { id: 1, name: "Cartes de Visite Premium", type: "physique", price: 8000, oldPrice: 10000, image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80", description: "Lot de 100 cartes de visite, papier mat 350g avec pelliculage. Design professionnel inclus.", popular: true, promo: true },
-            { id: 2, name: "Flyers A5 Promotionnels", type: "physique", price: 15000, image: "https://images.unsplash.com/photo-1563298723-dcfebaa392e3?auto=format&fit=crop&w=600&q=80", description: "Impression de 100 flyers A5, papier couché brillant 135g. Parfait pour vos événements.", popular: true, promo: false },
-            { id: 3, name: "Ebook : Sourcing Chine", type: "numerique", price: 5000, image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80", description: "Apprenez à importer depuis Alibaba vers l'Afrique comme un pro. Format PDF interactif.", popular: true, promo: false },
-            { id: 4, name: "Template CV Moderne", type: "numerique", price: 2000, image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=600&q=80", description: "Modèle professionnel éditable sur Word pour booster votre carrière.", popular: false, promo: false },
-            { id: 5, name: "Roll-up Publicitaire 85x200", type: "physique", price: 35000, image: "https://images.unsplash.com/photo-1621538356948-4e8ce989ba6e?auto=format&fit=crop&w=600&q=80", description: "Support de communication vertical avec impression HD sur bâche de qualité.", popular: false, promo: false },
-            { id: 6, name: "Coaching E-commerce (1h)", type: "numerique", price: 25000, oldPrice: 40000, image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80", description: "Session de coaching personnalisée pour lancer votre business en ligne.", popular: true, promo: true },
-            { id: 7, name: "Tampon Encreur Officiel", type: "physique", price: 12000, image: "https://images.unsplash.com/photo-1598332120305-649061df4003?auto=format&fit=crop&w=600&q=80", description: "Tampon robuste pour entreprise, personnalisable avec logo.", popular: false, promo: false },
-            { id: 8, name: "Gestion Réseaux Sociaux", type: "numerique", price: 75000, image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=600&q=80", description: "Pack mensuel : Création de visuels et rédaction de posts hebdomadaires.", popular: false, promo: true }
+            { id: 1, name: "Photocopie N&B", type: "Bureautique", price: "25 F", unit: "/ page",image: main/Photocopie-N%26B.png, description: "Canon - Simple face, Papier 70g/80g haute qualité.", popular: true, position: "0% 0%" },
+            {  id: 2, name: "Impression Couleur", type: "Bureautique", price: "100 F", oldPrice: "250 F",unit: "/ page",image: SETTINGS.mainImageUrl, description: "Laser HP M577, rendu professionnel sur papier 80g.", promo: true,position: "50% 0%" },
+            { id: 3, name: "Saisie & Mise en Page", type: "Digital", price: "500 F", oldPrice: "1000 F",unit: "/ page",image: SETTINGS.mainImageUrl, description: "Saisie de texte, mise en forme et correction de documents.", position: "100% 0%" },
+            { id: 4, name: "Numérisation (Scan)", type: "Bureautique", price: "100 F", unit: "/ doc", image: SETTINGS.mainImageUrl, description: "Scan haute résolution vers Email ou clé USB.", position: "0% 100%" },
+            { id: 5, name: "Plastification", type: "Protection", price: "300 F", oldPrice: "500 F",unit: "",image: SETTINGS.mainImageUrl, description: "Protection durable pour vos documents A4 et A3.", position: "50% 100%" },
+            { id: 6, name: "Reliure", type: "Finition", price: "500 F", unit: "- 2500 F", image: SETTINGS.mainImageUrl, description: "Reliure spirale ou thermique pour rapports et mémoires.", position: "100% 100%" },
+            { id: 7, name: "Cartes de Visite Premium", type: "physique", price: 8000, oldPrice: 10000, image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80", description: "Lot de 100 cartes de visite, papier mat 350g avec pelliculage. Design professionnel inclus.", popular: true, promo: true },
+            { id: 8, name: "Flyers A5 Promotionnels", type: "physique", price: 15000, image: "https://images.unsplash.com/photo-1563298723-dcfebaa392e3?auto=format&fit=crop&w=600&q=80", description: "Impression de 100 flyers A5, papier couché brillant 135g. Parfait pour vos événements.", popular: true, promo: false },
+            { id: 9, name: "Ebook : Sourcing Chine", type: "numerique", price: 5000, image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80", description: "Apprenez à importer depuis Alibaba vers l'Afrique comme un pro. Format PDF interactif.", popular: true, promo: false },
+            { id: 10, name: "Template CV Moderne", type: "numerique", price: 2000, image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=600&q=80", description: "Modèle professionnel éditable sur Word pour booster votre carrière.", popular: false, promo: false },
+            { id: 11, name: "Roll-up Publicitaire 85x200", type: "physique", price: 35000, image: "https://images.unsplash.com/photo-1621538356948-4e8ce989ba6e?auto=format&fit=crop&w=600&q=80", description: "Support de communication vertical avec impression HD sur bâche de qualité.", popular: false, promo: false },
+            { id: 12, name: "Coaching E-commerce (1h)", type: "numerique", price: 25000, oldPrice: 40000, image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80", description: "Session de coaching personnalisée pour lancer votre business en ligne.", popular: true, promo: true },
+            { id: 13, name: "Tampon Encreur Officiel", type: "physique", price: 12000, image: "https://images.unsplash.com/photo-1598332120305-649061df4003?auto=format&fit=crop&w=600&q=80", description: "Tampon robuste pour entreprise, personnalisable avec logo.", popular: false, promo: false },
+            { id: 14, name: "Gestion Réseaux Sociaux", type: "numerique", price: 75000, image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=600&q=80", description: "Pack mensuel : Création de visuels et rédaction de posts hebdomadaires.", popular: false, promo: true }
         ];
 
         let cart = JSON.parse(localStorage.getItem('numerima_cart')) || [];
