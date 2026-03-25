@@ -42,6 +42,8 @@
         ::-webkit-scrollbar-thumb { background: #000; border-radius: 10px; }
         .modal-overlay { transition: all 0.3s ease; }
         .modal-content { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        
+        .input-focus:focus-within { border-color: #f97316; ring: 2px; ring-color: #f97316; }
     </style>
 </head>
 <body class="bg-[#fafafa] text-gray-900 flex flex-col min-h-screen selection:bg-brand-orange selection:text-white">
@@ -58,9 +60,9 @@
                 </div>
 
                 <nav class="hidden md:flex items-center space-x-8 font-semibold text-sm">
-                    <button onclick="navigate('home')" class="hover:text-brand-orange transition py-2">Accueil</button>
-                    <button onclick="navigate('shop')" class="hover:text-brand-orange transition py-2">Nos Services</button>
-                    <button onclick="navigate('contact')" class="hover:text-brand-orange transition py-2">Contact</button>
+                    <button onclick="navigate('home')" class="hover:text-brand-orange transition py-2 text-gray-600">Accueil</button>
+                    <button onclick="navigate('shop')" class="hover:text-brand-orange transition py-2 text-gray-600">Boutique</button>
+                    <button onclick="navigate('contact')" class="hover:text-brand-orange transition py-2 text-gray-600">Contact</button>
                 </nav>
 
                 <div class="flex items-center space-x-5">
@@ -82,78 +84,101 @@
         </div>
     </header>
 
-    <!-- Contenu Dynamique -->
     <main id="app-content" class="flex-grow">
-        <!-- Injecté par JS -->
+        <!-- JS injecte le contenu ici -->
     </main>
 
-    <!-- Pied de page -->
     <footer class="bg-black text-gray-400 py-16">
-        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12 text-center md:text-left">
             <div class="md:col-span-1">
-                <div class="text-white text-2xl font-extrabold mb-6 flex items-center gap-2">
+                <div class="text-white text-2xl font-extrabold mb-6 flex items-center justify-center md:justify-start gap-2">
                     <i class="fas fa-print text-brand-orange"></i> Numérima
                 </div>
-                <p class="text-sm leading-relaxed mb-6">L'excellence de l'impression et de la stratégie digitale à votre portée. Qualité garantie et livraison rapide.</p>
-                <div class="flex space-x-4">
-                    <a href="#" class="hover:text-brand-orange transition"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="hover:text-brand-orange transition"><i class="fab fa-instagram"></i></a>
-                </div>
+                <p class="text-sm leading-relaxed mb-6">Expertise 225. Qualité garantie et livraison rapide partout à Abidjan.</p>
             </div>
             <div>
                 <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-widest">Navigation</h4>
                 <ul class="space-y-4 text-sm">
                     <li><button onclick="navigate('shop')" class="hover:text-brand-orange transition">Tous les produits</button></li>
+                    <li><button onclick="navigate('shop', 'kit')" class="hover:text-brand-orange transition text-brand-orange font-bold">Nos Kits 🔥</button></li>
                     <li><button onclick="navigate('shop', 'physique')" class="hover:text-brand-orange transition">Imprimerie</button></li>
-                    <li><button onclick="navigate('shop', 'numerique')" class="hover:text-brand-orange transition">Solutions Digitales</button></li>
-                    <li><button onclick="navigate('shop', 'pack')" class="hover:text-brand-orange transition">Nos Kits</button></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-widest">Aide</h4>
-                <ul class="space-y-4 text-sm">
-                    <li><button onclick="navigate('contact')" class="hover:text-brand-orange transition">Demander un devis</button></li>
-                    <li><button onclick="navigate('contact')" class="hover:text-brand-orange transition">Suivi de commande</button></li>
                 </ul>
             </div>
             <div>
                 <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-widest">Contact</h4>
                 <ul class="space-y-4 text-sm">
-                    <li class="flex items-start gap-3"><i class="fas fa-map-marker-alt text-brand-orange mt-1"></i> Abidjan, Côte d'Ivoire</li>
-                    <li class="flex items-center gap-3"><i class="fab fa-whatsapp text-brand-orange"></i> +225 07 48 87 26 76</li>
+                    <li class="flex items-center justify-center md:justify-start gap-3"><i class="fab fa-whatsapp text-brand-orange"></i> +225 07 48 87 26 76</li>
+                    <li class="flex items-center justify-center md:justify-start gap-3"><i class="fas fa-map-marker-alt text-brand-orange"></i> Abidjan, Côte d'Ivoire</li>
                 </ul>
             </div>
         </div>
-        <div class="container mx-auto px-4 border-t border-gray-800 mt-16 pt-8 text-center text-xs">
-            <p>&copy; 2024 Numérima Imprim. Développé pour la performance.</p>
-        </div>
     </footer>
 
-    <!-- Fenêtre Modale Livraison -->
-    <div id="checkout-modal" class="fixed inset-0 z-[100] hidden">
+    <!-- MODAL DE COMMANDE AMÉLIORÉ -->
+    <div id="checkout-modal" class="fixed inset-0 z-[100] hidden flex items-end sm:items-center justify-center">
         <div class="modal-overlay absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal()"></div>
-        <div class="modal-content absolute bottom-0 left-0 right-0 sm:inset-x-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-lg bg-white rounded-t-[3rem] sm:rounded-[2.5rem] p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+        <div class="modal-content relative bg-white rounded-t-[3rem] sm:rounded-[2.5rem] p-8 shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto animate-fade-in">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-black">Finaliser la commande</h3>
-                <button onclick="closeModal()" class="bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition"><i class="fas fa-times"></i></button>
+                <h3 class="text-2xl font-black text-slate-900 tracking-tighter">Validation Commande</h3>
+                <button onclick="closeModal()" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 transition">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <form id="order-form" onsubmit="handleOrderSubmit(event)" class="space-y-4">
-                <div class="space-y-1">
-                    <label class="text-xs font-bold uppercase text-gray-400 ml-1">Nom Complet</label>
-                    <input type="text" id="cust-name" required placeholder="Ex: Jean Koffi" class="w-full px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-brand-orange outline-none transition">
+            
+            <!-- Récapitulatif de commande -->
+            <div class="mb-8 p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="fas fa-receipt text-brand-orange"></i>
+                    <span class="text-xs font-black uppercase text-slate-400 tracking-widest">Votre Panier</span>
                 </div>
-                <div class="space-y-1">
-                    <label class="text-xs font-bold uppercase text-gray-400 ml-1">Téléphone</label>
-                    <input type="tel" id="cust-phone" required placeholder="07 00 00 00 00" class="w-full px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-brand-orange outline-none transition">
+                <div id="checkout-summary-list" class="space-y-2 mb-4 text-sm font-medium text-slate-600">
+                    <!-- JS populate items -->
                 </div>
-                <div class="space-y-1">
-                    <label class="text-xs font-bold uppercase text-gray-400 ml-1">Lieu de livraison</label>
-                    <input type="text" id="cust-location" required placeholder="Ex: Cocody Angré 7ème" class="w-full px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-brand-orange outline-none transition">
+                <div class="pt-4 border-t border-slate-200 flex justify-between items-center">
+                    <span class="font-bold text-slate-900">Total à payer</span>
+                    <span id="checkout-total" class="text-xl font-black text-brand-orange">0 FCFA</span>
                 </div>
+            </div>
+
+            <form id="order-form" onsubmit="handleOrderSubmit(event)" class="space-y-5">
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase ml-4">Nom et Prénoms</label>
+                    <div class="relative flex items-center">
+                        <i class="fas fa-user absolute left-5 text-slate-300"></i>
+                        <input type="text" id="cust-name" required placeholder="Ex: Jean-Marc Koffi" 
+                            class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-brand-orange focus:bg-white transition shadow-sm">
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase ml-4">Numéro WhatsApp</label>
+                    <div class="relative flex items-center">
+                        <i class="fab fa-whatsapp absolute left-5 text-slate-300"></i>
+                        <input type="tel" id="cust-phone" required placeholder="Ex: 07 00 00 00 00" 
+                            class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-brand-orange focus:bg-white transition shadow-sm">
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase ml-4">Lieu de Livraison</label>
+                    <div class="relative flex items-center">
+                        <i class="fas fa-map-marker-alt absolute left-5 text-slate-300"></i>
+                        <input type="text" id="cust-location" required placeholder="Ex: Cocody Angré 8e Tranche" 
+                            class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-brand-orange focus:bg-white transition shadow-sm">
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase ml-4">Instructions Spéciales (Optionnel)</label>
+                    <textarea id="cust-note" rows="2" placeholder="Ex: Appelez-moi avant d'arriver..." 
+                        class="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-brand-orange focus:bg-white transition shadow-sm resize-none"></textarea>
+                </div>
+
                 <div class="pt-4">
-                    <button type="submit" class="w-full bg-brand-whatsapp hover:bg-brand-whatsappHover text-white font-black py-5 rounded-2xl transition shadow-xl flex items-center justify-center gap-4">
-                        <i class="fab fa-whatsapp text-2xl"></i> Envoyer sur WhatsApp
+                    <button type="submit" class="w-full bg-brand-whatsapp text-white font-black py-5 rounded-2xl transition hover:bg-brand-whatsappHover hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-4 shadow-xl shadow-brand-whatsapp/20">
+                        <i class="fab fa-whatsapp text-2xl"></i> CONFIRMER SUR WHATSAPP
                     </button>
+                    <p class="text-[10px] text-center text-slate-400 mt-4 uppercase tracking-widest font-bold">Paiement sécurisé à la livraison</p>
                 </div>
             </form>
         </div>
@@ -165,94 +190,16 @@
     </a>
 
     <script>
-        const WHATSAPP_NUMBER = "2250748872676"; 
+        const WHATSAPP_NUMBER = "2250748872676";
 
         const products = [
-            { 
-                id: 1, 
-                name: "Photocopie N&B", 
-                type: "physique", 
-                price: 25, 
-                unit: "/ page", 
-                image: "https://github.com/ehuie-jd/assets-produits/blob/main/Photocopie-N%26B.png?raw=true", 
-                description: "Copie laser haute vitesse format A4 & A3. Papier 70g/80g.", 
-                popular: true 
-            },
-            { 
-                id: 2, 
-                name: "Impression Couleur", 
-                type: "physique", 
-                price: 100, 
-                oldPrice: 250, 
-                unit: "/ page", 
-                image: "https://github.com/ehuie-jd/assets-produits/blob/main/Impression-Couleur.png?raw=true", 
-                description: "Impression Format A4 & A3, papier haute qualité 70/80gsm avec Rendu professionnel, couleurs vives. Idéal pour présentations, documents de cours, memoires, thèses, rapports de stages etc...", 
-                promo: true,
-                popular: true
-            },
-            { 
-                id: 3, 
-                name: "Saisie & Mise en Page", 
-                type: "numerique", 
-                price: 500, 
-                unit: "/ page", 
-                image: "https://github.com/ehuie-jd/assets-produits/blob/main/Saisie-Mise-en-Page.png?raw=true", 
-                description: "Traitement de texte, le prix revisé pour les corrections et mise en forme soignées." 
-            },
-            { 
-                id: 4, 
-                name: "Numérisation (Scan)", 
-                type: "numerique", 
-                price: 100, 
-                unit: "/ doc", 
-                image: "https://github.com/ehuie-jd/assets-produits/blob/main/Num%C3%A9risation-(Scan).png?raw=true", 
-                description: "Numérisation haute résolution vers Email, Whatsapp ou USB." 
-            },
-            { 
-                id: 5, 
-                name: "Plastification", 
-                type: "physique", 
-                price: 500, 
-                unit: "/ A4", 
-                image: "https://github.com/ehuie-jd/assets-produits/blob/main/Plastification.png?raw=true", 
-                description: "Protection rigide et durable pour vos documents." 
-            },
-            { 
-                id: 6, 
-                name: "Reliure Spirale Plastique", 
-                type: "physique", 
-                price: 500, 
-                unit: "/ dossier", 
-                image: "https://github.com/ehuie-jd/assets-produits/blob/main/Reliure.png?raw=true", 
-                description: "Finition spirale plastique ou métallique." 
-            },
-            { 
-                id: 9, 
-                name: "Reliure Cartonnée/Dos carrée Collé", 
-                type: "physique", 
-                price: 1500, 
-                unit: "/ dossier", 
-                image: "https://github.com/ehuie-jd/assets-produits/blob/main/reliure-dos-carr%C3%A9.png?raw=true", 
-                description: "Finition Cartonnée pour memoire et Dos carrée Collé pour livre." 
-            },
-            { 
-                id: 7, 
-                name: "Cartes de Visite", 
-                type: "physique", 
-                price: 8000, 
-                image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80", 
-                description: "Lot de 100 cartes, papier premium 350g.",
-                popular: true 
-            },
-            { 
-                id: 8, 
-                name: "Flyers A5", 
-                type: "physique", 
-                price: 15000, 
-                image: "https://images.unsplash.com/photo-1563298723-dcfebaa392e3?auto=format&fit=crop&w=600&q=80", 
-                description: "Impression 100 flyers, brillant 135g.",
-                popular: true 
-            }
+            { id: 1, name: "Photocopie N&B", type: "physique", price: 25, unit: "/ page", image: "https://github.com/ehuie-jd/assets-produits/blob/main/Photocopie-N%26B.png?raw=true", description: "Canon - Papier 70g/80g.", popular: true },
+            { id: 2, name: "Impression Couleur", type: "physique", price: 100, unit: "/ page", image: "https://github.com/ehuie-jd/assets-produits/blob/main/Impression-Couleur.png?raw=true", description: "Laser HP M577 haute qualité.", promo: true, popular: true },
+            { id: 100, name: "Kit Entrepreneur Pro", type: "kit", price: 45000, oldPrice: 60000, image: "https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?auto=format&fit=crop&w=600&q=80", description: "Pack complet : Logo + 100 Cartes + 50 Flyers + Page Facebook.", promo: true, popular: true },
+            { id: 3, name: "Saisie & Mise en Page", type: "numerique", price: 500, unit: "/ page", image: "https://github.com/ehuie-jd/assets-produits/blob/main/Saisie-Mise-en-Page.png?raw=true", description: "Traitement de texte professionnel." },
+            { id: 4, name: "Numérisation (Scan)", type: "numerique", price: 100, unit: "/ doc", image: "https://github.com/ehuie-jd/assets-produits/blob/main/Num%C3%A9risation-(Scan).png?raw=true", description: "Scan HD vers Email/USB." },
+            { id: 5, name: "Plastification", type: "physique", price: 300, unit: "", image: "https://github.com/ehuie-jd/assets-produits/blob/main/Plastification.png?raw=true", description: "Protection A4/A3." },
+            { id: 6, name: "Reliure", type: "physique", price: 500, unit: "", image: "https://github.com/ehuie-jd/assets-produits/blob/main/Reliure.png?raw=true", description: "Spirale ou Thermique." }
         ];
 
         let cart = JSON.parse(localStorage.getItem('numerima_cart')) || [];
@@ -291,9 +238,9 @@
                         ${badge}
                         <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition duration-300"></div>
                     </div>
-                    <div class="p-6 flex flex-col flex-grow">
+                    <div class="p-6 flex flex-col flex-grow text-center md:text-left">
                         <div class="flex justify-between items-start mb-2">
-                            <p class="text-[10px] font-black tracking-widest text-gray-400 uppercase">${p.type === 'physique' ? 'Impression' : 'Digital'}</p>
+                            <p class="text-[10px] font-black tracking-widest text-gray-400 uppercase">${p.type}</p>
                             <span class="text-brand-orange font-bold text-sm">${formatPrice(p.price)}${p.unit || ''}</span>
                         </div>
                         <h3 class="font-bold text-lg text-gray-900 group-hover:text-brand-orange transition mb-4 cursor-pointer" onclick="navigate('product', ${p.id})">${p.name}</h3>
@@ -313,14 +260,13 @@
             return `
                 <section class="relative bg-black text-white py-24 overflow-hidden">
                     <div class="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1562564055-71e051d33c19?auto=format&fit=crop&w=1500&q=80')] bg-cover bg-center"></div>
-                    <div class="container mx-auto px-4 relative z-10">
-                        <div class="max-w-2xl text-center md:text-left">
-                            <span class="inline-block bg-brand-orange text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest mb-6">Numérima Imprim</span>
-                            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6">Imprimez vos <br><span class="text-brand-orange underline underline-offset-8">Idées.</span></h1>
-                            <p class="text-lg text-gray-300 mb-10">Qualité professionnelle et solutions digitales innovantes à Abidjan.</p>
-                            <div class="flex flex-col sm:flex-row gap-4">
-                                <button onclick="navigate('shop')" class="bg-brand-orange hover:bg-brand-orangeHover px-10 py-4 rounded-xl font-bold transition">Découvrir nos services</button>
-                                <button onclick="navigate('contact')" class="bg-white/10 hover:bg-white/20 px-10 py-4 rounded-xl font-bold transition">Devenir partenaire</button>
+                    <div class="container mx-auto px-4 relative z-10 text-center md:text-left">
+                        <div class="max-w-2xl">
+                            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6 uppercase">Votre Succès,<br><span class="text-brand-orange">Notre Impression.</span></h1>
+                            <p class="text-lg text-gray-300 mb-10">Solutions d'imprimerie et kits marketing à Abidjan. Le partenaire des entrepreneurs.</p>
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                                <button onclick="navigate('shop')" class="bg-brand-orange hover:bg-brand-orangeHover px-10 py-4 rounded-xl font-bold transition shadow-xl shadow-brand-orange/20">Explorer la Boutique</button>
+                                <button onclick="navigate('shop', 'kit')" class="bg-white/10 hover:bg-white/20 border border-white/20 px-10 py-4 rounded-xl font-bold transition backdrop-blur-sm">Voir nos Kits</button>
                             </div>
                         </div>
                     </div>
@@ -342,9 +288,10 @@
             return `
                 <div class="bg-white border-b border-gray-100 py-16">
                     <div class="container mx-auto px-4 text-center">
-                        <h1 class="text-4xl font-extrabold mb-8 uppercase tracking-tighter">Catalogue Services</h1>
+                        <h1 class="text-4xl font-extrabold mb-8 uppercase tracking-tighter">Catalogue iNumérima</h1>
                         <div class="flex flex-wrap justify-center gap-4">
                             <button onclick="navigate('shop')" class="px-6 py-2 rounded-full text-sm font-bold ${!filter ? 'bg-black text-white' : 'bg-gray-100 text-gray-600'} transition">Tous</button>
+                            <button onclick="navigate('shop', 'kit')" class="px-6 py-2 rounded-full text-sm font-bold ${filter === 'kit' ? 'bg-brand-orange text-white' : 'bg-gray-100 text-gray-600'} transition">Nos Kits 🔥</button>
                             <button onclick="navigate('shop', 'physique')" class="px-6 py-2 rounded-full text-sm font-bold ${filter === 'physique' ? 'bg-black text-white' : 'bg-gray-100 text-gray-600'} transition">Impression</button>
                             <button onclick="navigate('shop', 'numerique')" class="px-6 py-2 rounded-full text-sm font-bold ${filter === 'numerique' ? 'bg-black text-white' : 'bg-gray-100 text-gray-600'} transition">Digital</button>
                         </div>
@@ -361,21 +308,19 @@
             if(!p) return `<div class="py-24 text-center">Produit introuvable.</div>`;
             return `
                 <div class="container mx-auto px-4 py-16">
-                    <button onclick="navigate('shop')" class="text-gray-400 hover:text-black mb-10 flex items-center gap-2 font-semibold">
-                        <i class="fas fa-arrow-left"></i> Retour au catalogue
-                    </button>
+                    <button onclick="navigate('shop')" class="text-gray-400 hover:text-black mb-10 font-semibold"><i class="fas fa-arrow-left"></i> Retour</button>
                     <div class="bg-white rounded-[40px] shadow-sm border border-gray-100 overflow-hidden flex flex-col lg:flex-row">
-                        <div class="lg:w-1/2 p-8 lg:p-12 bg-[#fafafa]">
-                            <img src="${p.image}" class="w-full h-auto max-h-[500px] object-contain rounded-3xl shadow-xl">
+                        <div class="lg:w-1/2 p-12 bg-[#fafafa]">
+                            <img src="${p.image}" class="w-full h-auto max-h-[500px] object-contain rounded-3xl shadow-xl mx-auto">
                         </div>
-                        <div class="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
-                            <span class="text-brand-orange font-black text-xs uppercase mb-4">${p.type}</span>
+                        <div class="lg:w-1/2 p-12 flex flex-col justify-center">
+                            <span class="text-brand-orange font-black text-xs uppercase mb-4 tracking-widest">${p.type}</span>
                             <h1 class="text-4xl font-extrabold mb-4 tracking-tighter">${p.name}</h1>
                             <p class="text-3xl font-black mb-8">${formatPrice(p.price)}${p.unit || ''}</p>
-                            <div class="bg-gray-50 p-6 rounded-2xl mb-10 border-l-4 border-brand-orange">
-                                <p class="text-gray-600 leading-relaxed">${p.description}</p>
+                            <div class="bg-slate-50 p-6 rounded-2xl mb-10 border-l-4 border-brand-orange">
+                                <p class="text-gray-600 leading-relaxed font-medium">${p.description}</p>
                             </div>
-                            <button onclick="addToCart(${p.id}, true)" class="w-full bg-black text-white font-bold py-5 rounded-2xl transition hover:bg-brand-orange">Ajouter au panier</button>
+                            <button onclick="addToCart(${p.id}, true)" class="w-full bg-black text-white font-black py-6 rounded-2xl hover:bg-brand-orange transition-all shadow-xl shadow-brand-orange/10 uppercase tracking-widest">Ajouter au panier</button>
                         </div>
                     </div>
                 </div>
@@ -383,26 +328,18 @@
         }
 
         function renderCart() {
-            if(cart.length === 0) return `<div class="py-32 text-center bg-white"><h2 class="text-3xl font-extrabold mb-4 uppercase">Panier Vide</h2><button onclick="navigate('shop')" class="bg-black text-white px-10 py-4 rounded-2xl font-bold">Voir nos services</button></div>`;
-            
+            if(cart.length === 0) return `<div class="py-32 text-center bg-white"><h2 class="text-3xl font-extrabold mb-4 uppercase tracking-tighter">Votre Panier est Vide</h2><button onclick="navigate('shop')" class="bg-black text-white px-10 py-4 rounded-2xl font-bold uppercase tracking-widest">Voir les services</button></div>`;
             let total = 0;
             const itemsHtml = cart.map((item, idx) => {
                 total += item.price * item.quantity;
                 return `
-                    <div class="flex items-center justify-between py-6 border-b border-gray-50">
+                    <div class="flex items-center justify-between py-6 border-b border-gray-50 flex-wrap gap-4">
                         <div class="flex items-center gap-6">
-                            <img src="${item.image}" class="w-20 h-20 object-cover rounded-xl">
-                            <div>
-                                <h4 class="font-extrabold text-lg">${item.name}</h4>
-                                <p class="text-brand-orange font-bold text-sm">${formatPrice(item.price)}</p>
-                            </div>
+                            <img src="${item.image}" class="w-20 h-20 object-cover rounded-2xl shadow-sm">
+                            <div><h4 class="font-extrabold text-lg line-clamp-1">${item.name}</h4><p class="text-brand-orange font-bold text-sm">${formatPrice(item.price)}</p></div>
                         </div>
                         <div class="flex items-center gap-6">
-                            <div class="flex items-center bg-gray-100 rounded-lg">
-                                <button onclick="updateQty(${idx}, -1)" class="px-3 py-1 font-black">-</button>
-                                <span class="px-2 font-bold">${item.quantity}</span>
-                                <button onclick="updateQty(${idx}, 1)" class="px-3 py-1 font-black">+</button>
-                            </div>
+                            <div class="flex items-center bg-gray-100 rounded-xl"><button onclick="updateQty(${idx}, -1)" class="px-4 py-2 font-black">-</button><span class="px-2 font-bold">${item.quantity}</span><button onclick="updateQty(${idx}, 1)" class="px-4 py-2 font-black">+</button></div>
                             <button onclick="removeFromCart(${idx})" class="text-gray-300 hover:text-red-500 transition"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>
@@ -412,15 +349,15 @@
             return `
                 <div class="container mx-auto px-4 py-20 flex flex-col lg:flex-row gap-16">
                     <div class="lg:w-2/3">
-                        <h1 class="text-4xl font-extrabold mb-12 uppercase italic tracking-tighter">Votre Panier</h1>
+                        <h1 class="text-4xl font-extrabold mb-12 uppercase italic tracking-tighter">Mon Panier</h1>
                         <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-gray-100">${itemsHtml}</div>
                     </div>
                     <div class="lg:w-1/3">
-                        <div class="bg-white p-10 rounded-[3rem] shadow-xl border border-gray-100 sticky top-32 text-center">
-                            <h3 class="font-bold text-gray-400 mb-2 uppercase text-xs">Total de la commande</h3>
+                        <div class="bg-white p-10 rounded-[3rem] shadow-2xl border border-gray-100 text-center sticky top-32">
+                            <h3 class="text-gray-400 mb-2 uppercase text-[10px] font-black tracking-[0.2em]">Total à payer</h3>
                             <span class="text-4xl font-black text-brand-orange block mb-10">${formatPrice(total)}</span>
-                            <button onclick="openCheckoutModal()" class="w-full bg-brand-whatsapp text-white font-black py-5 rounded-2xl flex items-center justify-center gap-4">
-                                <i class="fab fa-whatsapp text-xl"></i> Finaliser la commande
+                            <button onclick="openCheckoutModal()" class="w-full bg-brand-whatsapp text-white font-black py-6 rounded-2xl flex items-center justify-center gap-4 hover:scale-[1.03] transition shadow-xl shadow-brand-whatsapp/20">
+                                <i class="fab fa-whatsapp text-2xl"></i> PASSER À LA VALIDATION
                             </button>
                         </div>
                     </div>
@@ -431,17 +368,16 @@
         function renderContact() {
             return `
                 <div class="container mx-auto px-4 py-24 text-center max-w-2xl">
-                    <div class="bg-white p-16 rounded-[3rem] shadow-sm border border-gray-100">
+                    <div class="bg-white p-16 rounded-[4rem] shadow-sm border border-gray-100">
                         <div class="w-20 h-20 bg-brand-orange/10 text-brand-orange rounded-full flex items-center justify-center text-3xl mx-auto mb-10"><i class="fas fa-comments"></i></div>
-                        <h2 class="text-4xl font-extrabold mb-6 tracking-tighter uppercase italic">Besoin d'aide ?</h2>
-                        <p class="text-gray-500 leading-relaxed mb-12">Contactez notre équipe directement sur WhatsApp pour toute question ou demande de devis sur mesure.</p>
-                        <a href="https://wa.me/${WHATSAPP_NUMBER}" target="_blank" class="inline-block bg-brand-whatsapp text-white px-12 py-5 rounded-2xl font-black shadow-lg">Lancer la discussion</a>
+                        <h2 class="text-4xl font-extrabold mb-6 uppercase italic tracking-tighter">Besoin d'un devis ?</h2>
+                        <p class="text-gray-500 mb-12 leading-relaxed">Contactez nos experts directement sur WhatsApp pour toute demande spécifique ou commande en gros volume.</p>
+                        <a href="https://wa.me/${WHATSAPP_NUMBER}" target="_blank" class="inline-block bg-brand-whatsapp text-white px-12 py-5 rounded-2xl font-black shadow-xl shadow-brand-whatsapp/20 uppercase tracking-widest hover:scale-105 transition">Lancer la discussion</a>
                     </div>
                 </div>
             `;
         }
 
-        // Logic
         function addToCart(id, notify = true) {
             const p = products.find(prod => prod.id === id);
             const index = cart.findIndex(item => item.id === id);
@@ -470,7 +406,24 @@
             document.getElementById('cart-count').innerText = count;
         }
 
-        function openCheckoutModal() { document.getElementById('checkout-modal').classList.remove('hidden'); }
+        function openCheckoutModal() { 
+            const summaryList = document.getElementById('checkout-summary-list');
+            const summaryTotal = document.getElementById('checkout-total');
+            let total = 0;
+            
+            summaryList.innerHTML = '';
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+                const li = document.createElement('div');
+                li.className = "flex justify-between";
+                li.innerHTML = `<span>${item.name} <span class="text-slate-400">x${item.quantity}</span></span> <span>${formatPrice(item.price * item.quantity)}</span>`;
+                summaryList.appendChild(li);
+            });
+            
+            summaryTotal.innerText = formatPrice(total);
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
         function closeModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
 
         function handleOrderSubmit(e) {
@@ -478,6 +431,7 @@
             const name = document.getElementById('cust-name').value;
             const phone = document.getElementById('cust-phone').value;
             const location = document.getElementById('cust-location').value;
+            const note = document.getElementById('cust-note').value;
 
             let total = 0;
             let itemsText = "";
@@ -486,8 +440,17 @@
                 itemsText += `- ${item.name} (x${item.quantity})\n`;
             });
 
-            const text = `*COMMANDE NUMÉRIMA*\n\n*Client:* ${name}\n*Tél:* ${phone}\n*Lieu:* ${location}\n\n*Services:*\n${itemsText}\n*TOTAL:* ${formatPrice(total)}`;
+            const text = `*NOUVELLE COMMANDE iNUMÉRIMA*\n\n` +
+                         `👤 *Client :* ${name}\n` +
+                         `📞 *Tél :* ${phone}\n` +
+                         `📍 *Livraison :* ${location}\n` +
+                         (note ? `📝 *Note :* ${note}\n` : '') +
+                         `\n*Services :*\n${itemsText}\n` +
+                         `*TOTAL À PAYER : ${formatPrice(total)}*`;
+
             window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`);
+            
+            // Clean up
             closeModal();
             cart = [];
             saveCart();
